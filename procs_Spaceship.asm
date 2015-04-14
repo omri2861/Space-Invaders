@@ -1,8 +1,8 @@
 ; --------------------------
-; Name: procs1\ procedures for version 0.1.2
+; Name: procedures for spaceship
 ; Author: Omri Levy
-; Details: this will feature the procedures used in version 0.1.2
-;          purpose of this is to keep a neat code just by "including" the procedures' and to easily move procedures between versions
+; Details: this will feature the procedures that has something to do with the spaceship object
+;          the purpose of this is to keep a neat code just by "including" the procedures' and to easily move procedures between versions
 ; Date: 14/04/2015
 ; --------------------------
 proc MoveSpaceship
@@ -34,7 +34,8 @@ proc MoveSpaceship
 	jne notRight
 	cmp [spaceshipX],289 ;make sure that space ship didn't reach the end of the screen
 	jae spaceshipMoved ;if so, don't move it
-	mov cx,2 ;this system is a little ineffective for moving the spaceship, but it allows to control the spaceship's movement speed just by changing cx's value
+	mov cx,2 ;this system is a little ineffective for moving the spaceship, but it allows to control the spaceship's movement speed just 
+	;by changing cx's value
 	;this will allow later re-adjustments, or speed power- ups
 moveRight:
 	inc [spaceshipX] ;move the spaceship's position

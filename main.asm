@@ -1,10 +1,7 @@
 ; --------------------------
-; Name: version 0.1.2
+; Name: Main
 ; Author: Omri Levy
-; Details: in this version, there will be a spaceship that can move from right to left according 
-;          to keyboard arrows, and stops when it reaches the end of the screen.
-;          spaceship will shoot when space- bar is pressed.
-;          spaceship's size, design and movement speed might change in later versions
+; Details: This is the main file of the project "Space invaders"
 
 ; Date: 20/03/2015
 ; --------------------------
@@ -78,7 +75,7 @@ exit:
 	mov ax,4c00h
 	int 21h
 ; --------------------------
-include "procs1.asm"
+include "procs_spaceship.asm"
 ; --------------------------
 END start
 
