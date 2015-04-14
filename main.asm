@@ -2,7 +2,7 @@
 ; Name: Main
 ; Author: Omri Levy
 ; Details: This is the main file of the project "Space invaders"
-
+; version: currently 0.1.1 - only a moving spaceship, with no bugs
 ; Date: 20/03/2015
 ; --------------------------
 IDEAL
