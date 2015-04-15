@@ -13,7 +13,6 @@ proc shootNew
 	
 ;get the new bullet's Y:
 	mov ax,[spaceshipY] ;because bullet is going out at the end of the spaceship
-	dec ax
 	sub al,[BulletH]
 	mov [bulletY],ax ;save y in bx
 	
