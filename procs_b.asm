@@ -15,13 +15,16 @@ proc shootNew
 ;save the time of shooting the bullet:
 	mov ah,2ch
 	int 21h
+	inc dl
 	mov [bulletMSecs],dl
+	inc dh
 	mov [bulletSecs],dh
+	inc cl
 	mov [bulletMins],cl
 	
 ;get the new bullet's Y:
 	mov ax,[spaceshipY] ;because bullet is going out at the end of the spaceship
-	sub al,[BulletH]
+	sub ax,[BulletH]
 	mov [bulletY],ax ;save y in bx
 	
 ;get the new bullet's X:
@@ -38,10 +41,10 @@ proc shootNew
 	mov dx,[bulletY]
 	push dx
 	and dx,0
-	mov dl,[bulletW]
+	mov dx,[bulletW]
 	push dx
 	and dh,0
-	mov dl,[bulletH]
+	mov dx,[bulletH]
 	push dx
 	call drawBitmap
 	
@@ -56,7 +59,53 @@ proc shootNew
 	
 endp shootNew
 ; --------------------------
+proc updateBullet
+	
+	;store following registers:
+	push ax
+	push dx
+	push cx
+	
+	mov ah,2ch
+	int 21h
+	cmp dl,[bulletMSecs]
+	jae updateAllowed
+	cmp dh,[bulletSecs]
+	jae updateAllowed
+	cmp cl,[bulletMins]
+	jae updateAllowed
+	jmp BulletUpdated
 
+updateAllowed:
+	cmp [word ptr bulletY],0
+	ja bulletInRange
+	push dx ;in macro, dx is destroyed, so save it before
+	DrawImage bulletDeletion,bulletX,bulletY,bulletW,bulletH
+	pop dx ;restore dx
+	and [bulletFlag],0
+	jmp bulletUpdated
+	
+bulletInRange:
+	dec [word ptr bulletY]
+	push dx ;in macro, dx is destroyed, so save it before
+	DrawImage bullet,bulletX,bulletY,bulletW,bulletH
+	pop dx ;restore dx
+	
+bulletUpdated:
+	inc dl
+	inc dh
+	inc cl
+	mov [bulletMSecs],dl
+	mov [bulletSecs],dh
+	mov [bulletMins],cl
+	
+	;restore following registers:
+	pop cx
+	pop dx
+	pop ax
+	
+	ret
+endp updateBullet
 ; --------------------------
 
 ; --------------------------

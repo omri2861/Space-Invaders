@@ -45,10 +45,11 @@ DATASEG
 		   db 00,00
 	bulletX dw ?
 	bulletY dw ?
-	bulletW db 2
-	bulletH db 5
+	bulletW dw 2
+	bulletH dw 5
 	bulletFlag db 0 ;is there a bullet on the screen?
 	bulletDeletion db 00,00 ;drawing this variable in the bullet's position will delete it
+				   db 00,00
 				   db 00,00
 				   db 00,00
 				   db 00,00
@@ -111,7 +112,7 @@ notSpaceshipLeft:
 keyAnswered:
 	and [bulletFlag],1
 	jz cycle ;this line will be changed in later versions
-	
+	call updateBullet
 	
 	jmp cycle ;repeat the process until 'esc' is pressed
 	
