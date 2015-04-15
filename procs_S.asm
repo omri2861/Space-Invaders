@@ -26,7 +26,7 @@ proc MoveSpaceship
 	
 	cmp [spaceshipX],289 ;make sure that space ship didn't reach the end of the screen
 	jae spaceshipMoved ;if so, don't move it
-	mov cx,2 ;this system is a little ineffective for moving the spaceship, but it allows to control the spaceship's movement speed just 
+	mov cx,3 ;this system is a little ineffective for moving the spaceship, but it allows to control the spaceship's movement speed just 
 	;by changing cx's value
 	;this will allow later re-adjustments, or speed power- ups
 moveRight:
@@ -40,7 +40,7 @@ notRight:
 	;same as moving to the right, but to the opposite direction:
 	cmp [spaceshipX],1
 	jbe spaceshipMoved
-	mov cx,2
+	mov cx,3
 moveLeft:
 	dec [spaceshipX]
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH

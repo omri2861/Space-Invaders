@@ -77,7 +77,7 @@ proc updateBullet
 	jmp BulletUpdated
 
 updateAllowed:
-	cmp [word ptr bulletY],0
+	cmp [word ptr bulletY],6 ;bullet travels 6 pixels every time, so we take a safe distance from the top
 	ja bulletInRange
 	push dx ;in macro, dx is destroyed, so save it before
 	DrawImage bulletDeletion,bulletX,bulletY,bulletW,bulletH
@@ -86,12 +86,18 @@ updateAllowed:
 	jmp bulletUpdated
 	
 bulletInRange:
-	dec [word ptr bulletY]
+	push cx
 	push dx ;in macro, dx is destroyed, so save it before
+	mov cx,6
+printBullet:
+	dec [word ptr bulletY]
 	DrawImage bullet,bulletX,bulletY,bulletW,bulletH
+	loop printBullet
 	pop dx ;restore dx
+	pop cx
 	
 bulletUpdated:
+;save the new time:
 	inc dl
 	inc dh
 	inc cl
