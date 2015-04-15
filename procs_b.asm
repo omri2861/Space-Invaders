@@ -10,6 +10,14 @@ proc shootNew
 	;store following registers:
 	push ax
 	push dx
+	push cx
+	
+;save the time of shooting the bullet:
+	mov ah,2ch
+	int 21h
+	mov [bulletMSecs],dl
+	mov [bulletSecs],dh
+	mov [bulletMins],cl
 	
 ;get the new bullet's Y:
 	mov ax,[spaceshipY] ;because bullet is going out at the end of the spaceship
@@ -40,6 +48,7 @@ proc shootNew
 ;update flag:
 	mov [bulletFlag],1
 	
+	pop cx
 	pop dx
 	pop ax
 	

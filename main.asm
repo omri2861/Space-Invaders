@@ -38,17 +38,23 @@ DATASEG
 			  db 00,00,32,00,00,00,00,32,25,25,00,00,00,00,00,00,00,00,00,00,25,25,32,00,00,00,00,32,00,00
 			  db 00,00,00,00,00,00,00,25,25,00,00,00,00,00,00,00,00,00,00,00,00,25,25,00,00,00,00,00,00,00
 			  ;to see the spaceship, type Ctrl+f and then search the numbers 0, 20, 25, and 32
-	bullet db 32,32
-		   db 32,32
-		   db 32,32
-		   db 32,32
+	bullet db 15,15
+		   db 15,15
+		   db 15,15
+		   db 15,15
 		   db 00,00
 	bulletX dw ?
 	bulletY dw ?
 	bulletW db 2
 	bulletH db 5
 	bulletFlag db 0 ;is there a bullet on the screen?
-	bulletRequest db 0 ;did the user asked to shoot a bullet?
+	bulletDeletion db 00,00 ;drawing this variable in the bullet's position will delete it
+				   db 00,00
+				   db 00,00
+				   db 00,00
+	bulletSecs db 0
+	bulletMSecs db 0
+	bulletMins db 0
 ; --------------------------
 CODESEG
 start:
@@ -98,9 +104,15 @@ notSpaceshipLeft:
 ;check if the user asked to shoot, and shoot if he did:
 	cmp ah,spacebar
 	jne keyAnswered ;this is the last option, if the key is not spacebar, then it's a user mistake.
+	and [byte ptr bulletFlag],1
+	jnz keyAnswered ;there is already a bullet on the screen, so the spacebar press will be ignored
 	call shootNew
 	
 keyAnswered:
+	and [bulletFlag],1
+	jz cycle ;this line will be changed in later versions
+	
+	
 	jmp cycle ;repeat the process until 'esc' is pressed
 	
 ; --------------------------
