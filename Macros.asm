@@ -1,6 +1,13 @@
 ; -------------------------
+;equs:
+	rightKey equ 77
+	leftKey  equ 75
+	
+	
+; -------------------------
 ; this macro will simplify the use of the draw bitmap procedure.
 ; see details under "drawBitmap" procedure
+; registers destroyed: dx
 macro DrawImage obj,ObjX,ObjY,ObjW,ObjH
 	lea dx,[obj]
 	push dx

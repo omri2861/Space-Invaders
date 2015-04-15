@@ -7,31 +7,23 @@
 ; --------------------------
 proc MoveSpaceship
 
-	right equ 77
-	left  equ 75
-; this procedure reads a key and puts it's scan code value in to ah and ASCII to al
-; in addition, this updates the spaceship's on the screen, it re- prints it in the new position according to keyboard
-; since there is nothing to update according to keyboard other then the spaceship's position, procedure will always work on the variables
-; and there is no need to push anything.
+	
+
+; in addition, this updates the spaceship's position on the screen, it re- prints it in the new position according to keyboard
+; since there is nothing to update according to keyboard other then the spaceship's position, procedure will work directly on the variables
 	;this procedure might change in later versions
-; on entry: none
-; returns: ah- key's scan code
-;          al- key's ASCII value
+; on entry: a value for a flag in al: 0= left, 1=right
+; returns: nothing
 ; registers destroyed: none
-
-	push dx ;store dx
 	
-	mov ah, 0bh
-	int 21h ;check if any key is pressed
+
+	;store following registers:
+	push dx
+	
+	
 	and al,1
-	jz spaceshipMoved ;if no key is pressed, exit procedure and move to preform other processes
+	jz notRight
 	
-	and ax,0 ;if a key is pressed, read it
-	int 16h ; ah- scan code, al- ASCII
-
-	
-	cmp ah,right
-	jne notRight
 	cmp [spaceshipX],289 ;make sure that space ship didn't reach the end of the screen
 	jae spaceshipMoved ;if so, don't move it
 	mov cx,2 ;this system is a little ineffective for moving the spaceship, but it allows to control the spaceship's movement speed just 
@@ -45,25 +37,18 @@ moveRight:
 	jmp spaceshipMoved
 	
 notRight:
-	cmp ah,left
-	jne notLeft
+	;same as moving to the right, but to the opposite direction:
 	cmp [spaceshipX],1
 	jbe spaceshipMoved
 	mov cx,2
 moveLeft:
-	;same as moving to the right
 	dec [spaceshipX]
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
 	loop moveLeft
-	jmp spaceshipMoved
-notLeft:
-	cmp ah,39h
-	jne spaceshipMoved
-	;callshoot
-
+	
 spaceshipMoved:
 	
-	pop dx ; restore dx
+	pop cx ; restore dx
 	
 	ret
 endp moveSpaceship

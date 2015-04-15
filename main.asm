@@ -65,9 +65,38 @@ include "Macros.asm"
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
 	
 cycle:
-	call moveSpaceship ;move the spaceship across the screen according to keyboard
+;look for a keystroke:
+	mov ah, 0bh
+	int 21h ;check if any key is pressed
+	and al,1
+	jz keyAnswered ;if no key is pressed, exit procedure and move to preform other processes
+	;check pressed key:
+	and ax,0
+	int 16h
+
+;check if user wants to end game, and end it if he does:
 	dec ah
-	jz exit ;check if the key's scan code is 1, meaning 'esc'. if so, end program
+	jz exit ; 'esc' means exit
+	inc ah
+
+;check if user asked to move spaceship, and move it if he does:
+	cmp ah,rightKey
+	jne NotSpaceshipRight
+	mov al,1
+	call moveSpaceship
+	jmp keyAnswered ;proceed to preform other internal processes
+	
+NotSpaceshipRight:
+	cmp ah,leftKey
+	jne notSpaceshipLeft
+	and ax,0
+	call moveSpaceship
+	jmp keyAnswered ;proceed to preform other internal processes
+	
+notSpaceshipLeft:
+;check if the user asked to shoot, and shoot if he did:
+	
+keyAnswered:
 	jmp cycle ;repeat the process until 'esc' is pressed
 	
 ; --------------------------
