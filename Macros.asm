@@ -2,7 +2,7 @@
 ;equs:
 	rightKey equ 77
 	leftKey  equ 75
-	
+	spacebar equ 39h
 	
 ; -------------------------
 ; this macro will simplify the use of the draw bitmap procedure.

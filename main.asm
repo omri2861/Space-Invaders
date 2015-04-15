@@ -38,15 +38,17 @@ DATASEG
 			  db 00,00,32,00,00,00,00,32,25,25,00,00,00,00,00,00,00,00,00,00,25,25,32,00,00,00,00,32,00,00
 			  db 00,00,00,00,00,00,00,25,25,00,00,00,00,00,00,00,00,00,00,00,00,25,25,00,00,00,00,00,00,00
 			  ;to see the spaceship, type Ctrl+f and then search the numbers 0, 20, 25, and 32
-	bullet db 00
-		   db 32
-		   db 32
-		   db 32
-		   db 32
+	bullet db 32,32
+		   db 32,32
+		   db 32,32
+		   db 32,32
+		   db 00,00
 	bulletX dw ?
 	bulletY dw ?
-	bulletFlag db 0
-	bulletRequest db 0
+	bulletW db 2
+	bulletH db 5
+	bulletFlag db 0 ;is there a bullet on the screen?
+	bulletRequest db 0 ;did the user asked to shoot a bullet?
 ; --------------------------
 CODESEG
 start:
@@ -62,8 +64,7 @@ include "Macros.asm"
 ; --------------------------
 ; The code starts here:
 	;draw the spaceship in the middle of the screen:
-	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
-	
+	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH	
 cycle:
 ;look for a keystroke:
 	mov ah, 0bh
@@ -95,6 +96,9 @@ NotSpaceshipRight:
 	
 notSpaceshipLeft:
 ;check if the user asked to shoot, and shoot if he did:
+	cmp ah,spacebar
+	jne keyAnswered ;this is the last option, if the key is not spacebar, then it's a user mistake.
+	call shootNew
 	
 keyAnswered:
 	jmp cycle ;repeat the process until 'esc' is pressed
@@ -108,6 +112,7 @@ exit:
 	int 21h
 ; --------------------------
 include "procs_S.asm"
+include "procs_b.asm"
 ; --------------------------
 END start
 
