@@ -43,6 +43,10 @@ DATASEG
 		   db 32
 		   db 32
 		   db 32
+	bulletX dw ?
+	bulletY dw ?
+	bulletFlag db 0
+	bulletRequest db 0
 ; --------------------------
 CODESEG
 start:
@@ -53,18 +57,25 @@ start:
 	mov ax,13h          
 	int 10h ;enter graphics mode 13h
 ; --------------------------
+;Macro's here:
+MACRO DrawImage obj,ObjX,ObjY,ObjW,ObjH
+	lea dx,[obj]
+	push dx
+	mov dx,[objX]
+	push dx
+	mov dx,[objY]
+	push dx
+	mov dx,[objW]
+	push dx
+	mov dx,[objH]
+	push dx
+	call drawBitmap
+endm
+	
+; --------------------------
 ; The code starts here:
-	lea dx,[spaceship]
-	push dx
-	mov dx,[spaceshipX]
-	push dx
-	mov dx,[spaceshipY]
-	push dx
-	mov dx,[spaceshipW]
-	push dx
-	mov dx,[spaceshipH]
-	push dx
-	call drawBitmap ;draw the spaceship in the middle of the screen
+	;draw the spaceship in the middle of the screen:
+	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
 	
 cycle:
 	call moveSpaceship ;move the spaceship across the screen according to keyboard

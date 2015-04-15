@@ -40,41 +40,26 @@ proc MoveSpaceship
 moveRight:
 	inc [spaceshipX] ;move the spaceship's position
 	;this has to be pixel by pixel, because the bitmap only has a one pixel size of black frame
-	lea dx,[spaceship]
-	push dx
-	mov dx,[spaceshipX]
-	push dx
-	mov dx,[spaceshipY]
-	push dx
-	mov dx,[spaceshipW]
-	push dx
-	mov dx,[spaceshipH]
-	push dx
-	call drawBitmap ;re- draw it on the screen
+	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH ;re- draw spaceship on the screen
 	loop moveRight
 	jmp spaceshipMoved
 	
 notRight:
-;same as moving to the right
 	cmp ah,left
-	jne spaceshipMoved
+	jne notLeft
 	cmp [spaceshipX],1
 	jbe spaceshipMoved
 	mov cx,2
 moveLeft:
+	;same as moving to the right
 	dec [spaceshipX]
-	lea dx,[spaceship]
-	push dx
-	mov dx,[spaceshipX]
-	push dx
-	mov dx,[spaceshipY]
-	push dx
-	mov dx,[spaceshipW]
-	push dx
-	mov dx,[spaceshipH]
-	push dx
-	call drawBitmap
+	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
 	loop moveLeft
+	jmp spaceshipMoved
+notLeft:
+	cmp ah,39h
+	jne spaceshipMoved
+	;callshoot
 
 spaceshipMoved:
 	
@@ -146,6 +131,5 @@ innerBitmap:
 	ret 10
 endp drawBitmap
 ; --------------------------
-END start
 
 
