@@ -80,7 +80,7 @@ exit:
 	mov ax,4c00h
 	int 21h
 ; --------------------------
-include "procs_spaceship.asm"
+include "procs_S.asm"
 ; --------------------------
 END start
 
