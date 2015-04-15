@@ -57,21 +57,8 @@ start:
 	mov ax,13h          
 	int 10h ;enter graphics mode 13h
 ; --------------------------
-;Macro's here:
-MACRO DrawImage obj,ObjX,ObjY,ObjW,ObjH
-	lea dx,[obj]
-	push dx
-	mov dx,[objX]
-	push dx
-	mov dx,[objY]
-	push dx
-	mov dx,[objW]
-	push dx
-	mov dx,[objH]
-	push dx
-	call drawBitmap
-endm
-	
+;Macros:
+include "Macros.asm"
 ; --------------------------
 ; The code starts here:
 	;draw the spaceship in the middle of the screen:
