@@ -56,6 +56,20 @@ DATASEG
 	bulletSecs db 0
 	bulletMSecs db 0
 	bulletMins db 0
+	Alien db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+		  db 00,00,00,47,00,00,00,00,00,00,00,47,00,00,00
+		  db 00,00,00,00,47,00,00,00,00,00,47,00,00,00,00
+		  db 00,00,00,47,47,47,47,47,47,47,47,47,00,00,00
+		  db 00,00,47,47,00,47,47,47,47,47,00,47,47,00,00
+		  db 00,47,47,47,47,47,47,47,47,47,47,47,47,47,00
+		  db 00,47,00,47,47,47,47,47,47,47,47,47,00,47,00
+		  db 00,47,00,47,00,00,00,00,00,00,00,47,00,47,00
+		  db 00,00,00,00,47,47,47,00,47,47,47,00,00,00,00
+		  db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+	alienW dw 15
+	alienH dw 10
+	alienX dw 1 dup (97,122,147,172,197)
+	alienY dw 5 dup (50)
 ; --------------------------
 CODESEG
 start:
@@ -71,7 +85,11 @@ include "Macros.asm"
 ; --------------------------
 ; The code starts here:
 	;draw the spaceship in the middle of the screen:
-	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH	
+	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
+	mov dx,5
+	push dx
+	mov cx,5
+	call aliensStage1
 cycle:
 ;look for a keystroke:
 	mov ah, 0bh
@@ -126,6 +144,7 @@ exit:
 ; --------------------------
 include "procs_S.asm"
 include "procs_b.asm"
+include "Procs_A.asm"
 ; --------------------------
 END start
 
