@@ -38,38 +38,37 @@ DATASEG
 			  db 00,00,32,00,00,00,00,32,25,25,00,00,00,00,00,00,00,00,00,00,25,25,32,00,00,00,00,32,00,00
 			  db 00,00,00,00,00,00,00,25,25,00,00,00,00,00,00,00,00,00,00,00,00,25,25,00,00,00,00,00,00,00
 			  ;to see the spaceship, type Ctrl+f and then search the numbers 0, 20, 25, and 32
-	bullet db 15,15
-		   db 15,15
-		   db 15,15
-		   db 15,15
+	bullet db 40,40
+		   db 40,40
+		   db 40,40
+		   db 40,40
 		   db 00,00
 	bulletX dw ?
 	bulletY dw ?
 	bulletW dw 2
 	bulletH dw 5
 	bulletFlag db 0 ;is there a bullet on the screen?
-	bulletDeletion db 00,00 ;drawing this variable in the bullet's position will delete it
-				   db 00,00
-				   db 00,00
-				   db 00,00
-				   db 00,00
+	bulletDeletion db 10 dup (00) ;drawing this variable in the bullet's position will delete it
 	bulletSecs db 0
 	bulletMSecs db 0
 	bulletMins db 0
 	Alien db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-		  db 00,00,00,40,00,00,00,00,00,00,00,40,00,00,00
-		  db 00,00,00,00,40,00,00,00,00,00,40,00,00,00,00
-		  db 00,00,00,40,40,40,40,40,40,40,40,40,00,00,00
-		  db 00,00,40,40,00,40,40,40,40,40,00,40,40,00,00
-		  db 00,40,40,40,40,40,40,40,40,40,40,40,40,40,00
-		  db 00,40,00,40,40,40,40,40,40,40,40,40,00,40,00
-		  db 00,40,00,40,00,00,00,00,00,00,00,40,00,40,00
-		  db 00,00,00,00,40,40,40,00,40,40,40,00,00,00,00
+		  db 00,00,00,15,00,00,00,00,00,00,00,15,00,00,00
+		  db 00,00,00,00,15,00,00,00,00,00,15,00,00,00,00
+		  db 00,00,00,15,15,15,15,15,15,15,15,15,00,00,00
+		  db 00,00,15,15,00,15,15,15,15,15,00,15,15,00,00
+		  db 00,15,15,15,15,15,15,15,15,15,15,15,15,15,00
+		  db 00,15,00,15,15,15,15,15,15,15,15,15,00,15,00
+		  db 00,15,00,15,00,00,00,00,00,00,00,15,00,15,00
+		  db 00,00,00,00,15,15,15,00,15,15,15,00,00,00,00
 		  db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+		  ;see the alien by clicking ctrl+F then search for "15"
+	alienDeletion db 143 dup (00)
 	alienW dw 15
 	alienH dw 10
 	alienX dw 1 dup (97,122,147,172,197)
 	alienY dw 5 dup (30)
+	Aliens db 5 ;how many aliens are there?
 ; --------------------------
 CODESEG
 start:
@@ -128,10 +127,14 @@ notSpaceshipLeft:
 	call shootNew
 	
 keyAnswered:
+;before moving for the next cycle, some internal processes need to be done:
 	and [bulletFlag],1
-	jz cycle ;this line will be changed in later versions
+	jz noBullet ;this line will be changed in later versions
 	call updateBullet
+noBullet:
 	
+	push 5
+	call aliensStage1
 	jmp cycle ;repeat the process until 'esc' is pressed
 	
 ; --------------------------
