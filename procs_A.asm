@@ -8,11 +8,19 @@ proc AliensStage1
 	push bp
 	mov bp,sp
 	
-	and bx,0
+	push cx
+	push bx
+	
+	mov cx,[bp+4]
 drawAlien:
+	mov bx,cx
+	dec bx
+	shl bx,1
 	drawImage alien,alienX+bx,alienY+bx,alienW,alienH
-	inc bx
 	loop drawAlien
+	
+	pop bx
+	pop cx
 	
 	pop bp
 	ret 2

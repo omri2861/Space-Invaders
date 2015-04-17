@@ -11,9 +11,9 @@
 macro DrawImage obj,ObjX,ObjY,ObjW,ObjH
 	lea dx,[obj]
 	push dx
-	mov dx,[objX]
+	mov dx,[word ptr objX]
 	push dx
-	mov dx,[objY]
+	mov dx,[word ptr objY]
 	push dx
 	mov dx,[objW]
 	push dx
