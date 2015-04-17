@@ -133,8 +133,12 @@ keyAnswered:
 	call updateBullet
 noBullet:
 	
-	push 5
+	mov dx,5
+	push dx
 	call aliensStage1
+	
+	call checkForHit
+	
 	jmp cycle ;repeat the process until 'esc' is pressed
 	
 ; --------------------------

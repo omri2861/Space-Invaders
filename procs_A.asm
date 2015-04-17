@@ -35,60 +35,7 @@ aliensDrawn:
 endp aliensStage1
 ; ---------------------------------------------
 proc checkForHit
-;this procedure checks if there was an alien hit
-	push bp
-	mov bp,sp
-	
-	push cx
-	push ax
-	push dx
-	push si
-	
-	mov cl,[aliens]
-	and ch,0
-	mov dx,[bulletY]
-	lea bx,[alienY]
-	and si,0
-	
-checkHit:
-	mov dx,[word ptr alienY+si]
-	add dx,[alienW]
-	je mightHit
-	add si,2
-	loop checkHit
-	jmp hitApplied
-	
-mightHit:
-	push cx ;if the bullet missed, we need to go back and check the other aliens, meaning we have to save cx
-	mov cx,[alienW]
-	mov ax,[word ptr alienX+si]
-	dec ax ;since bullet is 2 pixels wide, we need to check if the edges of the bullet might hit as well
-	inc cx
-checkX:
-	cmp ax,[bulletX]
-	je bulletHit
-	inc ax
-	loop checkX
-	pop cx
-	loop checkHit
-	jmp hitApplied
-	
-hitApplied:
-	
-	pop si
-	pop dx
-	pop ax
-	pop cx
-	
-	pop bp
-	ret
 
-bulletHit:
-	pop cx ;cx that was pushed earlier wasn't popped
-	DrawImage alienDeletion,alienX+si,alienY+si,alienW,alienH
-	and [word ptr alienX+si],0
-	and [word ptr alienY+si],0
-	jmp hitApplied
 endp checkForHit
 	
 	
