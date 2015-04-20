@@ -68,7 +68,6 @@ DATASEG
 	alienH dw 10
 	alienX dw 1 dup (97,122,147,172,197)
 	alienY dw 5 dup (30)
-	Aliens db 5 ;how many aliens are there?
 ; --------------------------
 CODESEG
 start:
@@ -87,8 +86,7 @@ include "Macros.asm"
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
 	mov dx,5
 	push dx
-	
-	call aliensStage1
+	call aliens
 cycle:
 ;look for a keystroke:
 	mov ah, 0bh
@@ -135,7 +133,7 @@ noBullet:
 	
 	mov dx,5
 	push dx
-	call aliensStage1
+	call aliens
 	
 	call checkForHit
 	

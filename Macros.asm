@@ -20,5 +20,17 @@ macro DrawImage obj,ObjX,ObjY,ObjW,ObjH
 	mov dx,[objH]
 	push dx
 	call drawBitmap
-endm	
+endm
+; --------------------------
+macro DeleteImage ObjX,ObjY,ObjW,ObjH
+	mov dx,[word ptr objX]
+	push dx
+	mov dx,[word ptr objY]
+	push dx
+	mov dx,[objW]
+	push dx
+	mov dx,[objH]
+	push dx
+	call deleteBitmap
+endm
 ; --------------------------
