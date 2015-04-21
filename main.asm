@@ -63,11 +63,12 @@ DATASEG
 		  db 00,00,00,00,15,15,15,00,15,15,15,00,00,00,00
 		  db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 		  ;see the alien by clicking ctrl+F then search for "15"
-	alienDeletion db 143 dup (00)
+	alienDeletion db 150 dup (00)
 	alienW dw 15
 	alienH dw 10
 	alienX dw 1 dup (97,122,147,172,197)
 	alienY dw 5 dup (30)
+	gameFlag db 0
 ; --------------------------
 CODESEG
 start:
@@ -127,7 +128,7 @@ notSpaceshipLeft:
 keyAnswered:
 ;before moving for the next cycle, some internal processes need to be done:
 	and [bulletFlag],1
-	jz noBullet ;this line will be changed in later versions
+	jz noBullet 
 	call updateBullet
 noBullet:
 	
@@ -135,7 +136,16 @@ noBullet:
 	push dx
 	call aliens
 	
-	call checkForHit
+	mov dx,5
+	push dx
+	call updateHit
+	
+	mov dx,5
+	push dx
+	call updateGame
+	
+	and [byte ptr gameFlag],1
+	jnz exit
 	
 	jmp cycle ;repeat the process until 'esc' is pressed
 	

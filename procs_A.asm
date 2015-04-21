@@ -34,50 +34,85 @@ aliensDrawn:
 endp aliens
 ; ---------------------------------------------
 ; ---------------------------------------------
-proc checkForHit
+proc updateHit
 	
 	push bp
 	mov bp,sp
 	
 	mov cx,[bp+4]
 	and si,0
-	mov ax,[bulletY]
-	sub ax,[alienW]
 checkAlienY:
-	cmp ax,[word ptr alienY+si]
+	mov ax,[word ptr alienY+si]
+	add ax,[alienH]
+	cmp ax,[bulletY]
 	je checkAlienX
 	add si,2
 	loop checkAlienY
 	jmp hitApplied
 
 checkAlienX:
-	push cx
+	
 	mov ax,[alienX+si]
 	dec ax
-	mov cx,[alienW]
-	inc cx
-xChecker:
 	cmp ax,[bulletX]
-	je bulletHit
-	inc ax
-	loop xChecker
+	jbe maybeXhit
 	
 	add si,2
-	pop cx
+	loop checkAlienY
+	jmp hitApplied
+maybeXhit:
+	inc ax
+	add ax,[alienW]
+	cmp ax,[bulletX]
+	jae bulletHit
+	add si,2
 	loop checkAlienY
 	jmp hitApplied
 
 hitApplied:
 	
 	pop bp
-	ret
+	ret 2
 	
 bulletHit:
+	DrawImage alienDeletion,alienX+si,alienY+si,alienW,alienH
 	and [word ptr alienX+si],0
 	and [word ptr alienY+si],0
+	DrawImage bulletDeletion,bulletX,bulletY,bulletW,bulletH
+	and [bulletFlag],0
 	jmp hitApplied
 
-endp checkForHit
+endp updateHit
+; ---------------------------------------------
+proc updateGame
+; this updates the game's flag: sets it to 1 if it should end
+	push bp
+	mov bp,sp
+	
+	push si
+	push cx
+	
+	and si,0
+	mov cx,[bp+4]
+checkForAlien:
+	cmp [word ptr alienY+si],0
+	jnz gameOn
+	add si,2
+	loop checkForAlien
+	mov [byte ptr gameFlag],1
+gameOn:
+	
+	pop cx
+	pop si
+	
+	pop bp
+	ret 2
+endp updateGame
+; ---------------------------------------------
+proc updateAliens
+; this changes alien's X and Y and moves them across the screen
+
+endp updateAliens
 ; ---------------------------------------------
 
 	
