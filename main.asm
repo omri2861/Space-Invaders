@@ -69,6 +69,13 @@ DATASEG
 	alienX dw 1 dup (97,122,147,172,197)
 	alienY dw 5 dup (30)
 	gameFlag db 0
+	alienSecs db 0
+	alienYSecs db 0
+	alienMSecs db 0
+	alienYMSecs db 0
+	alienMins db 0
+	alienYMins db 0
+	alienDirection db 1
 ; --------------------------
 CODESEG
 start:
@@ -126,15 +133,19 @@ notSpaceshipLeft:
 	call shootNew
 	
 keyAnswered:
+	
+	mov dx,5
+	push dx
+	call updateAliens
+	
+	mov dx,5
+	push dx
+	call aliens
 ;before moving for the next cycle, some internal processes need to be done:
 	and [bulletFlag],1
 	jz noBullet 
 	call updateBullet
 noBullet:
-	
-	mov dx,5
-	push dx
-	call aliens
 	
 	mov dx,5
 	push dx

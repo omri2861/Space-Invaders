@@ -80,6 +80,8 @@ bulletHit:
 	and [word ptr alienY+si],0
 	DrawImage bulletDeletion,bulletX,bulletY,bulletW,bulletH
 	and [bulletFlag],0
+	and [word ptr bulletY],0
+	and [word ptr bulletX],0
 	jmp hitApplied
 
 endp updateHit
@@ -99,7 +101,7 @@ checkForAlien:
 	jnz gameOn
 	add si,2
 	loop checkForAlien
-	mov [byte ptr gameFlag],1
+	or [byte ptr gameFlag],1
 gameOn:
 	
 	pop cx
@@ -109,11 +111,141 @@ gameOn:
 	ret 2
 endp updateGame
 ; ---------------------------------------------
-proc updateAliens
-; this changes alien's X and Y and moves them across the screen
+proc findMax
 
+	push bp
+	mov bp,sp
+	
+	mov bx,[bp+4]
+	mov cx,[bp+6]
+	and ax,0
+findMaxloop:
+	cmp ax,[word ptr bx]
+	ja notTheMax
+	mov ax,[word ptr bx]
+notTheMax:
+	add bx,2
+	loop findMaxloop
+	
+	pop bp
+	ret 4
+
+endp findMax
+; ---------------------------------------------
+proc findMin
+
+	push bp
+	mov bp,sp
+	
+	push bx
+	push cx
+	
+	mov bx,[bp+4]
+	mov cx,[bp+6]
+	or ax,0FFFFh
+findMinloop:
+	cmp [word ptr bx],0
+	jz notTheMin ;ignore all aliens' with x=0: they are dead
+	cmp ax,[word ptr bx]
+	jb notTheMin
+	mov ax,[word ptr bx]
+notTheMin:
+	add bx,2
+	loop findMinloop
+	
+	pop cx
+	pop bx
+	
+	pop bp
+	ret 4
+
+endp findMin
+; ---------------------------------------------
+proc updateAliens
+	
+	push bp
+	mov bp,sp
+	
+	push ax
+	
+	mov ah,2ch
+	int 21h
+	cmp dl,[alienMSecs]
+	jae updateAlienAllowed
+	cmp dh,[alienSecs]
+	jae updateAlienAllowed
+	cmp cl,[alienMins]
+	jae updateAlienAllowed
+	jmp aliensUpdated
+	
+updateAlienAllowed:
+	;save the new time:
+	inc dl
+	inc dh
+	inc cl
+	mov [alienMSecs],dl
+	mov [alienSecs],dh
+	mov [alienMins],cl
+	
+	;decide on the direction:
+	cmp [alienDirection],0
+	jz moveAliensLeft
+	
+	mov dx,[bp+4]
+	push dx
+	lea dx,[alienX]
+	push dx
+	call findMax
+	;max is now in ax
+	add ax,[alienW]
+	cmp ax,318
+	jae rightEnd
+	
+	mov cx,[bp+4]
+	lea bx,[alienX]
+moveAlienRight:
+	and [word ptr bx],0FFFFh
+	jz skipMoveRight
+	inc [word ptr bx]
+skipMoveRight:
+	add bx,2
+	loop moveAlienRight
+	jmp aliensUpdated
+	
+rightEnd:
+	and [byte ptr alienDirection],0
+	jmp aliensUpdated
+	
+moveAliensLeft:
+	mov dx,[bp+4]
+	push dx
+	lea dx,[alienX]
+	push dx
+	call findMin
+	
+	cmp ax,2
+	jbe leftEnd
+	
+	mov cx,[bp+4]
+	lea bx,[alienX]
+moveAlienLeft:
+	and [word ptr bx],0FFFFh
+	jz skipMoveLeft
+	dec [word ptr bx]
+skipMoveLeft:
+	add bx,2
+	loop moveAlienLeft
+	jmp aliensUpdated
+	
+leftEnd:
+	or [byte ptr alienDirection],1
+	
+aliensUpdated:
+	
+	
+	pop ax
+	
+	pop bp
+	ret 2
 endp updateAliens
 ; ---------------------------------------------
-
-	
-	
