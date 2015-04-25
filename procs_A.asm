@@ -43,9 +43,12 @@ proc updateHit
 	and si,0
 checkAlienY:
 	mov ax,[word ptr alienY+si]
+	cmp ax,[bulletY]
+	ja YnotHit
 	add ax,[alienH]
 	cmp ax,[bulletY]
-	je checkAlienX
+	ja checkAlienX
+YnotHit:
 	add si,2
 	loop checkAlienY
 	jmp hitApplied
@@ -241,11 +244,68 @@ leftEnd:
 	or [byte ptr alienDirection],1
 	
 aliensUpdated:
-	
+	mov dx,[bp+4]
+	push dx
+	call updateAliensY
 	
 	pop ax
 	
 	pop bp
 	ret 2
 endp updateAliens
+; ---------------------------------------------
+proc updateAliensY
+	push bp
+	mov bp,sp
+	
+	push cx
+	push bx
+	push dx
+	push ax
+	
+	mov ah,2ch
+	int 21h
+	cmp dl,[alienYMSecs]
+	jae updateYAllowed
+	cmp dh,[alienYSecs]
+	jae updateYAllowed
+	cmp cl,[alienYMins]
+	jae updateYAllowed
+	jmp aliensYUpdated
+	
+updateYAllowed:
+	;save the new time:
+	add dl,50
+	inc dh
+	inc cl
+	mov [alienYMSecs],dl
+	mov [alienYSecs],dh
+	mov [alienYMins],cl
+	
+	mov cx,[bp+4]
+	lea bx,[alienY]
+aliensYloop:
+	and [word ptr bx],0FFFFh
+	jz skipYupdate
+	add [word ptr bx],1
+	mov dx,[word ptr bx]
+	add dx,[alienH]
+	cmp dx,[spaceshipY]
+	jb skipYupdate
+	or [byte ptr gameFlag],1
+skipYupdate:
+	add bx,2
+	loop aliensYloop
+	
+	
+aliensYupdated:
+	pop ax
+	pop dx
+	pop bx
+	pop cx
+	
+	pop bp
+	ret 2
+
+endp updateAliensY
 ; ---------------------------------------------

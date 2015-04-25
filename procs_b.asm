@@ -81,6 +81,8 @@ updateAllowed:
 	ja bulletInRange
 	push dx ;in macro, dx is destroyed, so save it before
 	DrawImage bulletDeletion,bulletX,bulletY,bulletW,bulletH
+	and [word ptr bulletY],0
+	and [word ptr bulletX],0
 	pop dx ;restore dx
 	and [bulletFlag],0
 	jmp bulletUpdated
