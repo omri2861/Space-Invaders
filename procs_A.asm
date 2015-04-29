@@ -3,36 +3,65 @@
 ; Details: this will feature the procedures that are essential for creating the aliens in game
 ; Date: 16/04/2015
 ; ---------------------------------------------
-proc aliens
-;this will draw the aliens of stage 1 and will upgrade according to their position in the array
+proc drawAliens
+;this will draw the aliens according to their position in the given array
+; *note: procedure is treating every variable in word size
+; **note: this procedure can only receive one width and height, meaning it can draw only on type of alien every time she is called!
+; on entry: the amount of aliens
+;			the offset of the alien's data
+;           reference to the array of the aliens' X
+;           reference to the array of the aliens' Y
+;           the alien's width
+;           the alien's height
+; on exit: aliens printed to the screen
+; returns: nothing
+; registers destroyed: none
 	push bp
 	mov bp,sp
 	
+	push ax
 	push cx
+	push dx
 	push bx
 	push si
 	
-	mov cx,[bp+4]
+	mov bx,aliensYArray
+	mov cx,[bp+14]
+	and si,0
 drawAlien:
-	mov si,cx
-	dec si
-	shl si,1
-	and [word ptr alienY+si],0FFFFh
+	and [word ptr bx+si],0FFFFh
 	jnz okay2Draw
+	add si,2
 	loop drawAlien
 	jmp aliensdrawn
 okay2Draw:
-	drawImage alien,alienX+si,alienY+si,alienW,alienH
+	mov dx,bitmapPic
+	push dx
+	mov bx,bitmapX
+	mov dx,[bx+si]
+	push dx
+	mov bx,bitmapY
+	mov dx,[bx+si]
+	push dx
+	mov dx,bitmapWidth
+	push dx
+	mov dx,bitmapHeight
+	push dx
+	call drawBitmap
+	
+	add si,2
 	loop drawAlien
 	
 aliensDrawn:
 	pop si
 	pop bx
+	pop dx
 	pop cx
+	pop ax
 	
 	pop bp
-endp aliens
-; ---------------------------------------------
+	ret 12
+endp drawAliens
 ; ---------------------------------------------
 proc updateHit
 	
@@ -90,28 +119,36 @@ bulletHit:
 endp updateHit
 ; ---------------------------------------------
 proc updateGame
-; this updates the game's flag: sets it to 1 if it should end
+; this procedure updates the game's flag: sets it to 1 if it should end
+; on entry: reference to the alien's array pushed
+;			the amount of aliens pushed
+; on exit: gameFlag variable updated
+; returns: nothing
+; registers destroyed: none			
 	push bp
 	mov bp,sp
 	
 	push si
 	push cx
+	push bx
 	
+	mov bx,aliensArray
 	and si,0
-	mov cx,[bp+4]
+	mov cx,aliensAmount
 checkForAlien:
-	cmp [word ptr alienY+si],0
+	and [word ptr bx+si],0FFFFh
 	jnz gameOn
 	add si,2
 	loop checkForAlien
 	or [byte ptr gameFlag],1
 gameOn:
 	
+	pop bx
 	pop cx
 	pop si
 	
 	pop bp
-	ret 2
+	ret 4
 endp updateGame
 ; ---------------------------------------------
 proc findMax

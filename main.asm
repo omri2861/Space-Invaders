@@ -87,14 +87,55 @@ start:
 	int 10h ;enter graphics mode 13h
 ; --------------------------
 ;Macros:
-include "Macros.asm"
+;equs:
+	aliensAmount equ [bp+4]
+	aliensArray equ [bp+6]
+	aliensYArray equ [bp+8]
+	aliensXArray equ [bp+8]
+	rightKey equ 77
+	leftKey  equ 75
+	spacebar equ 39h
+	bitmapHeight equ [bp+4]
+	bitmapWidth equ [bp+6]
+	bitmapY equ [bp+8]
+	bitmapX equ [bp+10]
+	bitmapPic equ [bp+12]
+	
+; -------------------------
+; this macro will simplify the use of the draw bitmap procedure.
+; see details under "drawBitmap" procedure
+; registers destroyed: dx
+macro DrawImage obj,ObjX,ObjY,ObjW,ObjH
+	lea dx,[obj]
+	push dx
+	mov dx,[word ptr objX]
+	push dx
+	mov dx,[word ptr objY]
+	push dx
+	mov dx,[objW]
+	push dx
+	mov dx,[objH]
+	push dx
+	call drawBitmap
+endm
+
 ; --------------------------
 ; The code starts here:
 	;draw the spaceship in the middle of the screen:
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
 	mov dx,5
 	push dx
-	call aliens
+	lea dx,[alien]
+	push dx
+	lea dx,[alienX]
+	push dx
+	mov dx,[alienY]
+	push dx
+	mov dx,[alienW]
+	push dx
+	mov dx,[alienH]
+	push dx
+	call drawAliens
 cycle:
 ;look for a keystroke:
 	mov ah, 0bh
@@ -103,28 +144,28 @@ cycle:
 	jz keyAnswered ;if no key is pressed, exit procedure and move to preform other processes
 	;check pressed key:
 	and ax,0
-	int 16h
+	int 16h ; scan code now in ah
 
 ;check if user wants to end game, and end it if he does:
 	dec ah
-	jz exit ; 'esc' means exit
-	inc ah
+	jnz continue1	; 'esc' (scan code 1) means exit
+	jmp exit
+continue1:
+	inc ah ;return ax to previous state 
 
 ;check if user asked to move spaceship, and move it if he does:
 	cmp ah,rightKey
-	jne NotSpaceshipRight
-	mov al,1
-	call moveSpaceship
-	jmp keyAnswered ;proceed to preform other internal processes
-	
-NotSpaceshipRight:
+	je arrowKeyEntered
 	cmp ah,leftKey
-	jne notSpaceshipLeft
-	and ax,0
+	je arrowKeyEntered
+	jmp dontMoveSpaceship
+arrowKeyEntered:
+	shr ax,10
+	and ax,1 ;al now has a flag: 0=left, 1=right
 	call moveSpaceship
 	jmp keyAnswered ;proceed to preform other internal processes
 	
-notSpaceshipLeft:
+dontMoveSpaceship:
 ;check if the user asked to shoot, and shoot if he did:
 	cmp ah,spacebar
 	jne keyAnswered ;this is the last option, if the key is not spacebar, then it's a user mistake.
@@ -140,7 +181,17 @@ keyAnswered:
 	
 	mov dx,5
 	push dx
-	call aliens
+	lea dx,[alien]
+	push dx
+	lea dx,[alienX]
+	push dx
+	lea dx,[alienY]
+	push dx
+	mov dx,[alienW]
+	push dx
+	mov dx,[alienH]
+	push dx
+	call drawAliens
 ;before moving for the next cycle, some internal processes need to be done:
 	and [bulletFlag],1
 	jz noBullet 
@@ -151,6 +202,8 @@ noBullet:
 	push dx
 	call updateHit
 	
+	lea dx,[alienX]
+	push dx
 	mov dx,5
 	push dx
 	call updateGame

@@ -6,12 +6,9 @@
 ; Date: 14/04/2015
 ; --------------------------
 proc MoveSpaceship
-
-	
-
-; in addition, this updates the spaceship's position on the screen, it re- prints it in the new position according to keyboard
+;this updates the spaceship's position on the screen, it re- prints it in the new position according to keyboard
 ; since there is nothing to update according to keyboard other then the spaceship's position, procedure will work directly on the variables
-	;this procedure might change in later versions
+
 ; on entry: a value for a flag in al: 0= left, 1=right
 ; returns: nothing
 ; registers destroyed: none
@@ -19,15 +16,15 @@ proc MoveSpaceship
 
 	;store following registers:
 	push dx
-	
+	push cx
 	
 	and al,1
 	jz notRight
 	
 	cmp [spaceshipX],289 ;make sure that space ship didn't reach the end of the screen
 	jae spaceshipMoved ;if so, don't move it
-	mov cx,3 ;this system is a little ineffective for moving the spaceship, but it allows to control the spaceship's movement speed just 
-	;by changing cx's value
+	mov cx,3 ;current speed- 3 pixels per press
+	;this system allows to control the spaceship's movement speed just by changing cx's value 
 	;this will allow later re-adjustments, or speed power- ups
 moveRight:
 	inc [spaceshipX] ;move the spaceship's position
@@ -47,18 +44,15 @@ moveLeft:
 	loop moveLeft
 	
 spaceshipMoved:
-	
-	pop cx ; restore dx
+	;restore following registers:
+	pop cx
+	pop dx 
 	
 	ret
 endp moveSpaceship
 ; --------------------------
 proc drawBitmap
-	bitmapHeight equ [bp+4]
-	bitmapWidth equ [bp+6]
-	bitmapY equ [bp+8]
-	bitmapX equ [bp+10]
-	bitmapPic equ [bp+12]
+	
 ; on entry: the offset of the bitmap's data
 ;           the desired bitmap's x on screen
 ;           the desired bitmap's y on screen
