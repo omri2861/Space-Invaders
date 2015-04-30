@@ -1,6 +1,6 @@
 proc shootNew
 
-;this procedure shoots a new bullet from the spaceship on the screen, and updates the bullet's variables: X, Y, and time
+;this procedure shoots a new bullet from the spaceship on the screen, and updates the bullet's variables: X, Y, and the time
 ; on entry: none
 ; on exit: bullet is on the screen
 ; returns: nothing
@@ -28,7 +28,7 @@ proc shootNew
 	
 ;get the new bullet's X:
 	mov ax,[spaceshipW]
-	sub ax,[bulletW] ;since we don't know how large is the bullet
+	sub ax,[bulletW] ;since we don't know how large is the bullet, and it has to be from the middle of the spaceship
 	shr ax,1 ;because bullet is coming out of the middle, divide by 2
 	add ax,[spaceshipX]
 	mov [bulletX],ax ;the new bullet's x is now calculated and saved to it's variable

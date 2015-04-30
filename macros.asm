@@ -1,5 +1,4 @@
 ;equs:
-	aliensAmount equ [bp+4]
 	aliensArray equ [bp+6]
 	aliensYArray equ [bp+8]
 	aliensXArray equ [bp+8]

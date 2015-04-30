@@ -1,15 +1,12 @@
 proc drawBitmap
-	
+;this procedure draws the given bitmap on the screen in the desired location
 ; on entry: the offset of the bitmap's data
 ;           the desired bitmap's x on screen
 ;           the desired bitmap's y on screen
 ;           the bitmap's width
 ;           the bitmap's height
-
 ; returns: nothing
 ; registers destroyed: none
-;this procedure draws the given bitmap on the screen
-
 
 	push bp
 	mov bp,sp
@@ -21,7 +18,7 @@ proc drawBitmap
 	push bx
 	push si
 	
-	mov si,bitmapPic ;the picture's data
+	mov si,bitmapPic ;reference to the picture's data
 	mov dx,bitmapY
 	mov cx,bitmapHeight
 	mov bx,bitmapX
@@ -40,11 +37,10 @@ innerBitmap:
 	pop cx
 	loop innerBitmap
 	
-	sub bx,bitmapWidth
+	sub bx,bitmapWidth ;reset the x pointer
 	inc dx ;increase y after starting a new line
 	pop cx
 	loop outerBitmap
-	
 	
 	;restore following registers:
 	pop si

@@ -1,8 +1,8 @@
 ; this procedure will find the highest of the given numbers
 ; on entry: how many numbers to check
 ;			the reference to the array of the numbers
-; on exit: minimum in ax
-; returns: minimum
+; on exit: nothing
+; returns: minimum in ax
 ; registers destroyed: none
 ; *note: this procedure treats every number in a word size
 ; **note: this procedure will work in the unsigned system!!\

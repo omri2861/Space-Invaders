@@ -1,8 +1,9 @@
 proc MoveSpaceship
 ;this updates the spaceship's position on the screen, it re- prints it in the new position according to keyboard
-; since there is nothing to update according to keyboard other then the spaceship's position, procedure will work directly on the variables
+; since there is nothing to update according to keyboard other then the spaceship's position, procedure will work directly on the variables and not on pushed references or values
 
 ; on entry: a value for a flag in al: 0= left, 1=right
+; on exit: the spaceship on the screen is moved according to flag
 ; returns: nothing
 ; registers destroyed: none
 	

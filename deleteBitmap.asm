@@ -1,5 +1,5 @@
 proc deleteBitmap
-	
+; this procedure draws a void in the given area of the screen, making the old bitmap disappear
 ; on entry: the desired bitmap's x on screen
 ;           the desired bitmap's y on screen
 ;           the bitmap's width
@@ -7,8 +7,6 @@ proc deleteBitmap
 
 ; returns: nothing
 ; registers destroyed: none
-;this procedure deletes the given bitmap from the screen
-
 
 	push bp
 	mov bp,sp
@@ -32,11 +30,11 @@ innerDeletion:
 	inc bx
 	and al,0
 	mov ah,0Ch
-	int 10h ;write pixel from bitmap to screen
+	int 10h ;delete the pixel on the screen
 	pop cx
 	loop innerDeletion
 	
-	sub bx,bitmapWidth
+	sub bx,bitmapWidth ;reset the x pointer
 	inc dx ;increase y after starting a new line
 	pop cx
 	loop outerDeletion
