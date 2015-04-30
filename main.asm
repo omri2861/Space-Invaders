@@ -111,10 +111,10 @@ macro DrawImage obj,ObjX,ObjY,ObjW,ObjH
 	call drawBitmap
 endm
 ; --------------------------
+macro deleteImage ObjX,ObjY,ObjW,ObjH
 ; this macro will simplify the use of the draw bitmap procedure.
 ; see details under "drawBitmap" procedure
 ; registers destroyed: dx
-macro deleteImage ObjX,ObjY,ObjW,ObjH
 	mov dx,[word ptr objX]
 	push dx
 	mov dx,[word ptr objY]
@@ -125,6 +125,10 @@ macro deleteImage ObjX,ObjY,ObjW,ObjH
 	push dx
 	call deleteBitmap
 endm
+; --------------------------
+; this macro will simplify the use of the 'drawAliens' procedure.
+; for more info look under 'drawAliens' procedure
+; registers destroyed: dx
 ; --------------------------
 CODESEG
 start:
@@ -230,7 +234,7 @@ noBullet:
 	push dx
 	mov dx,[aliens]
 	push dx
-	call updateHit
+	call checkForHit
 	
 	lea dx,[alienX]
 	push dx
@@ -251,9 +255,17 @@ exit:
 	mov ax,4c00h
 	int 21h
 ; --------------------------
-include "procs_S.asm"
-include "procs_b.asm"
-include "Procs_A.asm"
+include "checkF~1.asm"
+include "delete~1.asm"
+include "drawAl~1.asm"
+include "drawBi~1.asm"
+include "findMax.asm"
+include "findMin.asm"
+include "moveSp~1.asm"
+include "shootNew.asm"
+include "update~1.asm"
+include "update~2.asm"
+include "update~3.asm"
 ; --------------------------
 END start
 
