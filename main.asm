@@ -77,58 +77,7 @@ DATASEG
 	alienDirection db 1
 ; --------------------------
 ;Macros:
-;equs:
-	aliensAmount equ [bp+4]
-	aliensArray equ [bp+6]
-	aliensYArray equ [bp+8]
-	aliensXArray equ [bp+8]
-	rightKey equ 77
-	leftKey  equ 75
-	spacebar equ 39h
-	bitmapHeight equ [bp+4]
-	bitmapWidth equ [bp+6]
-	bitmapY equ [bp+8]
-	bitmapX equ [bp+10]
-	bitmapPic equ [bp+12]
-	count equ [bp+4]
-	arrayPointer equ [bp+6]
-	
-; -------------------------
-; this macro will simplify the use of the draw bitmap procedure.
-; see details under "drawBitmap" procedure
-; registers destroyed: dx
-macro DrawImage obj,ObjX,ObjY,ObjW,ObjH
-	lea dx,[obj]
-	push dx
-	mov dx,[word ptr objX]
-	push dx
-	mov dx,[word ptr objY]
-	push dx
-	mov dx,[objW]
-	push dx
-	mov dx,[objH]
-	push dx
-	call drawBitmap
-endm
-; --------------------------
-macro deleteImage ObjX,ObjY,ObjW,ObjH
-; this macro will simplify the use of the draw bitmap procedure.
-; see details under "drawBitmap" procedure
-; registers destroyed: dx
-	mov dx,[word ptr objX]
-	push dx
-	mov dx,[word ptr objY]
-	push dx
-	mov dx,[objW]
-	push dx
-	mov dx,[objH]
-	push dx
-	call deleteBitmap
-endm
-; --------------------------
-; this macro will simplify the use of the 'drawAliens' procedure.
-; for more info look under 'drawAliens' procedure
-; registers destroyed: dx
+	include "macros.asm"
 ; --------------------------
 CODESEG
 start:
@@ -142,19 +91,7 @@ start:
 ; The code starts here:
 	;draw the spaceship in the middle of the screen:
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
-	mov dx,[aliens]
-	push dx
-	lea dx,[alien]
-	push dx
-	lea dx,[alienX]
-	push dx
-	mov dx,[alienY]
-	push dx
-	mov dx,[alienW]
-	push dx
-	mov dx,[alienH]
-	push dx
-	call drawAliens
+	summonAliens aliens,alien,alienX,alienY,alienW,alienH
 cycle:
 ;look for a keystroke:
 	mov ah, 0bh
@@ -193,48 +130,18 @@ dontMoveSpaceship:
 	call shootNew
 	
 keyAnswered:
+	;before moving for the next cycle, some internal processes need to be done:
+	updateAliensPositions aliens,alienX,alienY,alienW,alienH
 	
-	mov dx,[aliens]
-	push dx
-	lea dx,[alienX]
-	push dx
-	lea dx,[alienY]
-	push dx
-	mov dx,[alienW]
-	push dx
-	mov dx,[alienH]
-	push dx
-	call updateAliens
+	summonAliens aliens,alien,alienX,alienY,alienW,alienH
 	
-	mov dx,[aliens]
-	push dx
-	lea dx,[alien]
-	push dx
-	lea dx,[alienX]
-	push dx
-	lea dx,[alienY]
-	push dx
-	mov dx,[alienW]
-	push dx
-	mov dx,[alienH]
-	push dx
-	call drawAliens
-;before moving for the next cycle, some internal processes need to be done:
 	and [bulletFlag],1
 	jz noBullet 
 	call updateBullet
+	
+	
 noBullet:
-	mov dx,[alienH]
-	push dx
-	mov dx,[alienW]
-	push dx
-	lea dx,[alienX]
-	push dx
-	lea dx,[alienY]
-	push dx
-	mov dx,[aliens]
-	push dx
-	call checkForHit
+	checkIfHit aliens,alienX,alienY,alienW,alienH
 	
 	lea dx,[alienX]
 	push dx

@@ -1,9 +1,8 @@
 proc checkForHit
 ; this procedure is checking if the bullet had hit the mark. if so, it deletes the alien and the bullet, and puts
 ; 0 in the alien's position in the array, meaning killing it. if not, procedure moves on.
-; on entry: Alien Deletion offset (temporary)
-;			Alien's Width
-;			Alien's height
+; on entry: Alien's height
+;			Alien's width
 ;			aliens' x array reference
 ;			aliens' Y array reference
 ; 			how many aliens\ aliens count
