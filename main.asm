@@ -48,7 +48,6 @@ DATASEG
 	bulletW dw 2
 	bulletH dw 5
 	bulletFlag db 0 ;is there a bullet on the screen?
-	bulletDeletion db 10 dup (00) ;drawing this variable in the bullet's position will delete it
 	bulletSecs db 0
 	bulletMSecs db 0
 	bulletMins db 0
@@ -63,11 +62,11 @@ DATASEG
 		  db 00,00,00,00,15,15,15,00,15,15,15,00,00,00,00
 		  db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 		  ;see the alien by clicking ctrl+F then search for "15"
-	alienDeletion db 150 dup (00)
 	alienW dw 15
 	alienH dw 10
-	alienX dw 1 dup (97,122,147,172,197)
-	alienY dw 5 dup (30)
+	alienX dw 1 dup (97,122,147,172,197,222,247,272)
+	alienY dw 8 dup (30)
+	aliens dw 8
 	gameFlag db 0
 	alienSecs db 0
 	alienYSecs db 0
@@ -76,15 +75,6 @@ DATASEG
 	alienMins db 0
 	alienYMins db 0
 	alienDirection db 1
-; --------------------------
-CODESEG
-start:
-	mov ax, @data
-	mov ds, ax
-	mov ax,0A000h
-	mov es,ax ;set video memory segment
-	mov ax,13h          
-	int 10h ;enter graphics mode 13h
 ; --------------------------
 ;Macros:
 ;equs:
@@ -100,6 +90,8 @@ start:
 	bitmapY equ [bp+8]
 	bitmapX equ [bp+10]
 	bitmapPic equ [bp+12]
+	count equ [bp+4]
+	arrayPointer equ [bp+6]
 	
 ; -------------------------
 ; this macro will simplify the use of the draw bitmap procedure.
@@ -118,12 +110,35 @@ macro DrawImage obj,ObjX,ObjY,ObjW,ObjH
 	push dx
 	call drawBitmap
 endm
-
+; --------------------------
+; this macro will simplify the use of the draw bitmap procedure.
+; see details under "drawBitmap" procedure
+; registers destroyed: dx
+macro deleteImage ObjX,ObjY,ObjW,ObjH
+	mov dx,[word ptr objX]
+	push dx
+	mov dx,[word ptr objY]
+	push dx
+	mov dx,[objW]
+	push dx
+	mov dx,[objH]
+	push dx
+	call deleteBitmap
+endm
+; --------------------------
+CODESEG
+start:
+	mov ax, @data
+	mov ds, ax
+	mov ax,0A000h
+	mov es,ax ;set video memory segment
+	mov ax,13h          
+	int 10h ;enter graphics mode 13h
 ; --------------------------
 ; The code starts here:
 	;draw the spaceship in the middle of the screen:
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
-	mov dx,5
+	mov dx,[aliens]
 	push dx
 	lea dx,[alien]
 	push dx
@@ -175,11 +190,19 @@ dontMoveSpaceship:
 	
 keyAnswered:
 	
-	mov dx,5
+	mov dx,[aliens]
+	push dx
+	lea dx,[alienX]
+	push dx
+	lea dx,[alienY]
+	push dx
+	mov dx,[alienW]
+	push dx
+	mov dx,[alienH]
 	push dx
 	call updateAliens
 	
-	mov dx,5
+	mov dx,[aliens]
 	push dx
 	lea dx,[alien]
 	push dx
@@ -197,14 +220,21 @@ keyAnswered:
 	jz noBullet 
 	call updateBullet
 noBullet:
-	
-	mov dx,5
+	mov dx,[alienH]
+	push dx
+	mov dx,[alienW]
+	push dx
+	lea dx,[alienX]
+	push dx
+	lea dx,[alienY]
+	push dx
+	mov dx,[aliens]
 	push dx
 	call updateHit
 	
 	lea dx,[alienX]
 	push dx
-	mov dx,5
+	mov dx,[aliens]
 	push dx
 	call updateGame
 	

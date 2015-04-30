@@ -34,15 +34,15 @@ proc shootNew
 	
 ;get the new bullet's X:
 	mov ax,[spaceshipW]
+	sub ax,[bulletW] ;since we don't know how large is the bullet
 	shr ax,1 ;because bullet is coming out of the middle, divide by 2
-	dec ax
 	add ax,[spaceshipX]
 	mov [bulletX],ax ;the new bullet's x is now calculated and saved to it's variable
 	
 	DrawImage bullet,bulletX,bulletY,bulletW,bulletH
 	
 ;update flag:
-	mov [bulletFlag],1
+	or [bulletFlag],1
 	
 	;restore used registers:
 	pop cx
@@ -78,7 +78,7 @@ updateAllowed:
 	cmp [word ptr bulletY],6 ;bullet travels 6 pixels every time, so we take a safe distance from the top
 	ja bulletInRange
 	; if below 6, bullet is out of range and needs to be deleted:
-	DrawImage bulletDeletion,bulletX,bulletY,bulletW,bulletH
+	DeleteImage bulletX,bulletY,bulletW,bulletH
 	and [word ptr bulletY],0
 	and [word ptr bulletX],0 ;reset the bullet's position because when checking for hit, we might encounter the old position of a deleted bullet 
 	and [bulletFlag],0
