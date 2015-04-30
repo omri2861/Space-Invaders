@@ -64,9 +64,10 @@ DATASEG
 		  ;see the alien by clicking ctrl+F then search for "15"
 	alienW dw 15
 	alienH dw 10
-	alienX dw 1 dup (97,122,147,172,197,222,247,272)
-	alienY dw 8 dup (30)
-	aliens dw 8
+	alienX dw 1 dup (45,70,95,120,145,170,195,220,245,270,295,55,80,105,130,155,180,205,230,255,280)
+	alienY dw 11 dup (30)
+		   dw 11 dup (50)
+	aliens dw 21
 	gameFlag db 0
 	alienSecs db 0
 	alienYSecs db 0
@@ -138,10 +139,9 @@ keyAnswered:
 	and [bulletFlag],1
 	jz noBullet 
 	call updateBullet
-	
+	checkIfHit aliens,alienX,alienY,alienW,alienH
 	
 noBullet:
-	checkIfHit aliens,alienX,alienY,alienW,alienH
 	
 	lea dx,[alienX]
 	push dx
