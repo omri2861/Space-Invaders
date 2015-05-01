@@ -12,7 +12,8 @@
 	bitmapPic equ [bp+12]
 	count equ [bp+4]
 	arrayPointer equ [bp+6]
-	
+	aliensAmount equ [bp+12]
+	aliensXRef equ [bp+10]
 ; -------------------------
 ; this macro will simplify the use of the draw bitmap procedure.
 ; see details under "drawBitmap" procedure

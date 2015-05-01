@@ -9,6 +9,7 @@ proc updateAliens
 	push cx
 	push bx
 	
+	; check if enough time has passed:
 	mov ah,2ch
 	int 21h
 	cmp dl,[alienMSecs]
@@ -20,7 +21,7 @@ proc updateAliens
 	jmp aliensUpdated
 	
 updateAlienAllowed:
-	;save the new time:
+	;enough time has indeed passed, so save the new time:
 	inc dl
 	inc dh
 	inc cl
@@ -32,63 +33,64 @@ updateAlienAllowed:
 	and [alienDirection],1
 	jz moveAliensLeft
 	
-	
-	mov dx,[bp+10]
+	;move the aliens right:
+	mov dx,aliensXRef
 	push dx
-	mov dx,[bp+12]
+	mov dx,aliensAmount
 	push dx
-	call findMax
-	;max is now in ax
-	add ax,[bp+6]
+	call findMax ;the most right alien on the screen's X is now in AX
+	add ax,[bp+6] ;add the alien's width, so we will check the right side of the alien and not the left
 	cmp ax,318
 	jae rightEnd
 	
-	mov cx,[bp+12]
-	mov bx,[bp+10]
+	; now, move the aliens to the right:
+	mov cx,aliensAmount
+	mov bx,aliensXRef
 moveAlienRight:
 	and [word ptr bx],0FFFFh
-	jz skipMoveRight
-	inc [word ptr bx]
+	jz skipMoveRight ;if 0, the alien is dead and shouldn't be moved
+	inc [word ptr bx] ;move the aliens one pixel to the right
 skipMoveRight:
 	add bx,2
 	loop moveAlienRight
 	jmp aliensUpdated
 	
 rightEnd:
+	; the aliens have reached the right end of the screen:
 	and [byte ptr alienDirection],0 ;change direction
 	jmp aliensUpdated
 	
 moveAliensLeft:
 	
-	mov dx,[bp+10]
+	mov dx,aliensXRef
 	push dx
-	mov dx,[bp+12]
+	mov dx,aliensAmount
 	push dx
-	call findMin
+	call findMin ;the X of the alien which is most left on the screen is now in ax
 	
 	cmp ax,2
 	jbe leftEnd
 	
-	mov cx,[bp+12]
-	mov bx,[bp+10]
+	mov cx,aliensAmount
+	mov bx,aliensXRef
 moveAlienLeft:
-	and [word ptr bx],0FFFFh
+	and [word ptr bx],0FFFFh ;if 0, the alien is dead and shouldn't be moved
 	jz skipMoveLeft
-	dec [word ptr bx]
+	dec [word ptr bx] ; move the alien one pixel to the left
 skipMoveLeft:
 	add bx,2
 	loop moveAlienLeft
 	jmp aliensUpdated
 	
 leftEnd:
-	or [byte ptr alienDirection],1
+	or [byte ptr alienDirection],1 ;aliens have reached the left end of the screen, so change direction
 	
 aliensUpdated:
-	mov dx,[bp+8]
+	mov dx,[bp+8] ;aliens' Y array reference
 	push dx
-	mov dx,[bp+4]
+	mov dx,[bp+4] ;aliens' height
 	push dx
-	mov dx,[bp+12]
+	mov dx,aliensAmount
 	push dx
 	call updateAliensY
 	
@@ -102,6 +104,13 @@ aliensUpdated:
 	ret 10
 endp updateAliens
 ; ---------------------------------------------
+; this procedure checks if enough time has passed to take the aliens down the screen. if so, it updates their position.
+; on entry: aliens' Y array reference
+;			aliens height
+;			aliens amount
+; on exit: the aliens moved down across the screen
+; returns: nothing
+; registers destroyed: AX, DX, BX, CX
 proc updateAliensY
 	push bp
 	mov bp,sp
@@ -125,17 +134,18 @@ updateYAllowed:
 	mov [alienYSecs],dh
 	mov [alienYMins],cl
 	
-	mov cx,[bp+4]
+	mov cx,[bp+4] 
 	mov bx,[bp+8]
 aliensYloop:
-	and [word ptr bx],0FFFFh
+	and [word ptr bx],0FFFFh ; if 0, the alien is dead and shouldn't be moved
 	jz skipYupdate
-	add [word ptr bx],1
-	mov dx,[word ptr bx]
-	add dx,[bp+6]
-	cmp dx,[spaceshipY]
+	add [word ptr bx],1 ;move the alien one pixel down
+	mov dx,[word ptr bx] ; move the new y to dx
+	add dx,[bp+6] ; add the alien's height, to check the bottom of the alien
+	cmp dx,[spaceshipY] ; if the alien has passed the spaceship Y, its game over, the user lost
 	jb skipYupdate
-	or [byte ptr gameFlag],1
+	or [byte ptr gameFlag],1 ;update the game flag if it is indeed game over
+	jmp aliensUpdated
 skipYupdate:
 	add bx,2
 	loop aliensYloop

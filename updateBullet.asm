@@ -4,6 +4,7 @@ proc updateBullet
 ; on exit: bullet's position and variables (X, Y, and time) are updated
 ; returns: nothing
 ; registers destroyed: none
+
 	;store following registers:
 	push ax
 	push dx
@@ -40,8 +41,8 @@ bulletInRange:
 	; re- draw the bullet:
 	mov cx,6 ;less effective in a loop, but saves memory and makes it easy to re- adjust the speed of the bullet, just by changing cx's value, and nothing else
 printBullet:
-	dec [word ptr bulletY]
-	DrawImage bullet,bulletX,bulletY,bulletW,bulletH
+	dec [word ptr bulletY] ; take the bullet one pixel up
+	DrawImage bullet,bulletX,bulletY,bulletW,bulletH ;draw it in it's new position
 	loop printBullet
 	
 bulletUpdated:

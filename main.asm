@@ -99,23 +99,22 @@ cycle:
 	int 21h ;check if any key is pressed
 	and al,1
 	jz keyAnswered ;if no key is pressed, exit procedure and move to preform other processes
+	
 	;check pressed key:
 	and ax,0
 	int 16h ; scan code now in ah
 
-;check if user wants to end game, and end it if he does:
-	dec ah
-	jnz continue1	; 'esc' (scan code 1) means exit
-	jmp exit
-continue1:
-	inc ah ;return ax to previous state 
-
-;check if user asked to move spaceship, and move it if he does:
+	;check if user wants to end game, and end it if he does:
+	cmp ah,1
+	jnz dontExitManually	; 'esc' (scan code 1) means exit
+	jmp exit ;this is because a conditional jump is out of range
+	
+dontExitManually:
+	;check if user asked to move spaceship, and move it if he does:
 	cmp ah,rightKey
 	je arrowKeyEntered
 	cmp ah,leftKey
-	je arrowKeyEntered
-	jmp dontMoveSpaceship
+	jne dontMoveSpaceship
 arrowKeyEntered:
 	shr ax,10
 	and ax,1 ;al now has a flag: 0=left, 1=right
@@ -125,7 +124,7 @@ arrowKeyEntered:
 dontMoveSpaceship:
 ;check if the user asked to shoot, and shoot if he did:
 	cmp ah,spacebar
-	jne keyAnswered ;this is the last option, if the key is not spacebar, then it's a user mistake.
+	jne keyAnswered ;this is the last option, if the key pressed is not spacebar, then it's a user mistake.
 	and [byte ptr bulletFlag],1
 	jnz keyAnswered ;there is already a bullet on the screen, so the spacebar press will be ignored
 	call shootNew
@@ -152,7 +151,7 @@ noBullet:
 	and [byte ptr gameFlag],1
 	jnz exit
 	
-	jmp cycle ;repeat the process until 'esc' is pressed
+	jmp cycle ;repeat the process until either 'esc' is pressed, the user killed all aliens, or the aliens have reached the spaceship
 	
 ; --------------------------
 ;when the code is done, go here:
