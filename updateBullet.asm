@@ -13,15 +13,10 @@ proc updateBullet
 	mov ah,2ch
 	int 21h
 	cmp dl,[bulletMSecs]
-	jae updateAllowed
-	cmp dh,[bulletSecs]
-	jae updateAllowed
-	cmp cl,[bulletMins]
-	jae updateAllowed
-	jmp BulletUpdated
+	je BulletUpdated
 
 updateAllowed:
-	cmp [word ptr bulletY],6 ;bullet travels 6 pixels every time, so we take a safe distance from the top
+	cmp [word ptr bulletY],8 ;bullet travels 6 pixels every time, so we take a safe distance from the top
 	ja bulletInRange
 	; if below 6, bullet is out of range and needs to be deleted:
 	DeleteImage bulletX,bulletY,bulletW,bulletH
@@ -31,13 +26,8 @@ updateAllowed:
 	jmp bulletUpdated
 	
 bulletInRange:
-	;save the new time:
-	inc dl
-	inc dh
-	inc cl
+	;save the old time:
 	mov [bulletMSecs],dl
-	mov [bulletSecs],dh
-	mov [bulletMins],cl
 	; re- draw the bullet:
 	mov cx,6 ;less effective in a loop, but saves memory and makes it easy to re- adjust the speed of the bullet, just by changing cx's value, and nothing else
 printBullet:

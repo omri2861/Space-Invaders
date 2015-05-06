@@ -14,12 +14,7 @@ proc shootNew
 ;save the time of shooting the bullet, in order to update it accordingly:
 	mov ah,2ch
 	int 21h
-	inc dl
 	mov [bulletMSecs],dl
-	inc dh
-	mov [bulletSecs],dh
-	inc cl
-	mov [bulletMins],cl
 	
 ;get the new bullet's Y:
 	mov ax,[spaceshipY] ;because bullet is going out at the end of the spaceship

@@ -13,21 +13,12 @@ proc updateAliens
 	mov ah,2ch
 	int 21h
 	cmp dl,[alienMSecs]
-	jae updateAlienAllowed
-	cmp dh,[alienSecs]
-	jae updateAlienAllowed
-	cmp cl,[alienMins]
-	jae updateAlienAllowed
-	jmp aliensUpdated
+	je aliensUpdated
+	
 	
 updateAlienAllowed:
 	;enough time has indeed passed, so save the new time:
-	inc dl
-	inc dh
-	inc cl
 	mov [alienMSecs],dl
-	mov [alienSecs],dh
-	mov [alienMins],cl
 	
 	;decide on the direction:
 	and [alienDirection],1
@@ -120,26 +111,19 @@ proc updateAliensY
 	cmp dl,[alienYMSecs]
 	jae updateYAllowed
 	cmp dh,[alienYSecs]
-	jae updateYAllowed
-	cmp cl,[alienYMins]
-	jae updateYAllowed
-	jmp aliensYUpdated
+	je aliensYUpdated
 	
 updateYAllowed:
-	;save the new time:
-	add dl,50
-	inc dh
-	inc cl
-	mov [alienYMSecs],dl
 	mov [alienYSecs],dh
-	mov [alienYMins],cl
+	add dl,50
+	mov [alienYMSecs],dl
 	
 	mov cx,[bp+4] 
 	mov bx,[bp+8]
 aliensYloop:
 	and [word ptr bx],0FFFFh ; if 0, the alien is dead and shouldn't be moved
 	jz skipYupdate
-	add [word ptr bx],1 ;move the alien one pixel down
+	inc [word ptr bx];move the alien one pixel down
 	mov dx,[word ptr bx] ; move the new y to dx
 	add dx,[bp+6] ; add the alien's height, to check the bottom of the alien
 	cmp dx,[spaceshipY] ; if the alien has passed the spaceship Y, its game over, the user lost

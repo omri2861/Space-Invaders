@@ -48,9 +48,8 @@ DATASEG
 	bulletW dw 2
 	bulletH dw 5
 	bulletFlag db 0 ;is there a bullet on the screen?
-	bulletSecs db 0
 	bulletMSecs db 0
-	bulletMins db 0
+	bulletHrs db 0
 	Alien db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 		  db 00,00,00,15,00,00,00,00,00,00,00,15,00,00,00
 		  db 00,00,00,00,15,00,00,00,00,00,15,00,00,00,00
@@ -64,17 +63,15 @@ DATASEG
 		  ;see the alien by clicking ctrl+F then search for "15"
 	alienW dw 15
 	alienH dw 10
-	alienX dw 1 dup (45,70,95,120,145,170,195,220,245,270,295,55,80,105,130,155,180,205,230,255,280)
-	alienY dw 11 dup (30)
-		   dw 11 dup (50)
-	aliens dw 21
+	alienX dw 1 dup (45,70,95,120,145,170,195,220,245,270,295,57,82,107,132,157,182,207,232,257,282,69,94,119,144,169,194,219,244,269)
+	alienY dw 11 dup (10)
+		   dw 10 dup (30)
+		   dw 9 dup (50)
+	aliens dw 30
 	gameFlag db 0
-	alienSecs db 0
+	alienYMSecs db 0
 	alienYSecs db 0
 	alienMSecs db 0
-	alienYMSecs db 0
-	alienMins db 0
-	alienYMins db 0
 	alienDirection db 1
 ; --------------------------
 ;Macros:
@@ -131,6 +128,7 @@ dontMoveSpaceship:
 	
 keyAnswered:
 	;before moving for the next cycle, some internal processes need to be done:
+	
 	updateAliensPositions aliens,alienX,alienY,alienW,alienH
 	
 	summonAliens aliens,alien,alienX,alienY,alienW,alienH
