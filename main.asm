@@ -38,15 +38,22 @@ DATASEG
 			  db 00,00,32,00,00,00,00,32,25,25,00,00,00,00,00,00,00,00,00,00,25,25,32,00,00,00,00,32,00,00
 			  db 00,00,00,00,00,00,00,25,25,00,00,00,00,00,00,00,00,00,00,00,00,25,25,00,00,00,00,00,00,00
 			  ;to see the spaceship, type Ctrl+f and then search the numbers 0, 20, 25, and 32
-	bullet db 40,40
-		   db 40,40
-		   db 40,40
-		   db 40,40
-		   db 00,00
+	bullet db 00,00,55,00,00
+		   db 00,55,53,55,00
+		   db 55,53,15,53,55
+		   db 55,53,15,53,55
+		   db 55,53,15,53,55
+		   db 55,53,15,53,55
+		   db 55,53,15,53,55
+		   db 55,53,15,53,55
+		   db 00,55,15,55,00
+		   db 00,00,55,00,00
+		   db 00,00,00,00,00
+		   db 00,00,00,00,00
 	bulletX dw ?
 	bulletY dw ?
-	bulletW dw 2
-	bulletH dw 5
+	bulletW dw 5
+	bulletH dw 12
 	bulletFlag db 0 ;is there a bullet on the screen?
 	bulletMSecs db 0
 	bulletHrs db 0
@@ -87,7 +94,7 @@ start:
 	int 10h ;enter graphics mode 13h
 ; --------------------------
 ; The code starts here:
-	;draw the spaceship in the middle of the screen:
+	;draw the spaceship and the aliens on the screen:
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
 	summonAliens aliens,alien,alienX,alienY,alienW,alienH
 cycle:
@@ -107,7 +114,7 @@ cycle:
 	jmp exit ;this is because a conditional jump is out of range
 	
 dontExitManually:
-	;check if user asked to move spaceship, and move it if he does:
+	;check if user asked to move spaceship, and move it if he did:
 	cmp ah,rightKey
 	je arrowKeyEntered
 	cmp ah,leftKey
@@ -159,17 +166,18 @@ exit:
 	mov ax,4c00h
 	int 21h
 ; --------------------------
-include "checkF~1.asm"
-include "delete~1.asm"
-include "drawAl~1.asm"
-include "drawBi~1.asm"
-include "findMax.asm"
-include "findMin.asm"
-include "moveSp~1.asm"
-include "shootNew.asm"
-include "update~1.asm"
-include "update~2.asm"
-include "update~3.asm"
+;procedures:
+	include "checkF~1.asm"
+	include "delete~1.asm"
+	include "drawAl~1.asm"
+	include "drawBi~1.asm"
+	include "findMax.asm"
+	include "findMin.asm"
+	include "moveSp~1.asm"
+	include "shootNew.asm"
+	include "update~1.asm"
+	include "update~2.asm"
+	include "update~3.asm"
 ; --------------------------
 END start
 

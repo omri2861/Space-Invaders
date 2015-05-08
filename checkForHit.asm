@@ -86,8 +86,6 @@ bulletHit:
 	and [word ptr alienY+si],0 ;kill the alien
 	DeleteImage bulletX,bulletY,bulletW,bulletH
 	and [bulletFlag],0
-	and [word ptr bulletY],0
-	and [word ptr bulletX],0 ;making sure that the game won't accidentally check for the old bullet's X and Y
 	jmp hitApplied
 
 endp checkForHit
