@@ -49,14 +49,12 @@ DATASEG
 		   db 00,55,15,55,00
 		   db 00,00,55,00,00
 		   db 00,00,00,00,00
-		   db 00,00,00,00,00
 	bulletX dw ?
 	bulletY dw ?
 	bulletW dw 5
-	bulletH dw 12
+	bulletH dw 11
 	bulletFlag db 0 ;is there a bullet on the screen?
 	bulletMSecs db 0
-	bulletHrs db 0
 	Alien db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 		  db 00,00,00,15,00,00,00,00,00,00,00,15,00,00,00
 		  db 00,00,00,00,15,00,00,00,00,00,15,00,00,00,00
@@ -167,17 +165,17 @@ exit:
 	int 21h
 ; --------------------------
 ;procedures:
-	include "checkF~1.asm"
-	include "delete~1.asm"
-	include "drawAl~1.asm"
-	include "drawBi~1.asm"
+	include "drawBi~1.asm" ;drawBitmap
+	include "delete~1.asm" ;deleteBitmap
+	include "moveSp~1.asm" ;moveSpaceship
+	include "shootNew.asm"
+	include "update~2.asm" ;updateBullet
+	include "checkF~1.asm" ;checkForHit
+	include "drawAl~1.asm" ;drawAliens
 	include "findMax.asm"
 	include "findMin.asm"
-	include "moveSp~1.asm"
-	include "shootNew.asm"
-	include "update~1.asm"
-	include "update~2.asm"
-	include "update~3.asm"
+	include "update~1.asm" ;updateAliens
+	include "update~3.asm" ;updateGame
 ; --------------------------
 END start
 
