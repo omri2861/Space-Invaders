@@ -80,7 +80,7 @@ DATASEG
 	alienDirection db 1
 ; --------------------------
 ;Macros:
-	include "macros.asm"
+	include "src\macros.asm"
 ; --------------------------
 CODESEG
 start:
@@ -165,17 +165,17 @@ exit:
 	int 21h
 ; --------------------------
 ;procedures:
-	include "drawBi~1.asm" ;drawBitmap
-	include "delete~1.asm" ;deleteBitmap
-	include "moveSp~1.asm" ;moveSpaceship
-	include "shootNew.asm"
-	include "update~2.asm" ;updateBullet
-	include "checkF~1.asm" ;checkForHit
-	include "drawAl~1.asm" ;drawAliens
-	include "findMax.asm"
-	include "findMin.asm"
-	include "update~1.asm" ;updateAliens
-	include "update~3.asm" ;updateGame
+	include "src\drawBi~1.asm" ;drawBitmap
+	include "src\delete~1.asm" ;deleteBitmap
+	include "src\moveSp~1.asm" ;moveSpaceship
+	include "src\shootNew.asm"
+	include "src\update~2.asm" ;updateBullet
+	include "src\checkF~1.asm" ;checkForHit
+	include "src\drawAl~1.asm" ;drawAliens
+	include "src\findMax.asm"
+	include "src\findMin.asm"
+	include "src\update~1.asm" ;updateAliens
+	include "src\update~3.asm" ;updateGame
 ; --------------------------
 END start
 
