@@ -1,7 +1,7 @@
 proc updateGame
 ; this procedure updates the game's flag: sets it to 1 if it should end, 0 otherwise
-; on entry: reference to the alien's array pushed
-;			the amount of aliens pushed
+; on entry: reference to the alien's array
+;			the amount of aliens
 ; on exit: gameFlag variable updated
 ; returns: nothing
 ; registers destroyed: none			
