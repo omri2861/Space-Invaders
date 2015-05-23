@@ -100,3 +100,18 @@ macro checkIfHit objCount,objX,objY,objW,objH
 	call checkForHit
 endm
 ; --------------------------
+macro clearScreen
+; this macro will clear the entire screen while in graphic mode 13h using the 'deleteBitmap' procedure.
+; for more information, look under 'deleteBitmap' procedure.
+; registers destroyed: DX
+	and dx,0
+	push dx
+	and dx,0
+	push dx
+	mov dx,320
+	push dx
+	mov dx,200
+	push dx
+	call deleteBitmap
+endm
+; --------------------------

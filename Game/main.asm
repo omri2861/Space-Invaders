@@ -78,6 +78,8 @@ DATASEG
 	alienYSecs db 0
 	alienMSecs db 0
 	alienDirection db 1
+	winMsg db "Well Done!",0Ah,"You have beated all the aliens and savedmankind!",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
+	lossMsg db "GAME OVER!",0Ah,"The aliens have reached the earth and",0Ah,"they will destroy all mankind.",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
 ; --------------------------
 ;Macros:
 	include "src\macros.asm"
@@ -92,6 +94,7 @@ start:
 	int 10h ;enter graphics mode 13h
 ; --------------------------
 ; The code starts here:
+startGame:
 	;draw the spaceship and the aliens on the screen:
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
 	summonAliens aliens,alien,alienX,alienY,alienW,alienH
@@ -135,6 +138,11 @@ keyAnswered:
 	;before moving for the next cycle, some internal processes need to be done:
 	
 	updateAliensPositions aliens,alienX,alienY,alienW,alienH
+	and [byte ptr gameFlag],1
+	jz didntLoose
+	jmp loss
+	;due to relative jump out of range
+didntLoose:
 	
 	summonAliens aliens,alien,alienX,alienY,alienW,alienH
 	
@@ -152,7 +160,7 @@ noBullet:
 	call updateGame
 	
 	and [byte ptr gameFlag],1
-	jnz exit
+	jnz win
 	
 	jmp cycle ;repeat the process until either 'esc' is pressed, the user killed all aliens, or the aliens have reached the spaceship
 	
@@ -163,6 +171,25 @@ exit:
 	int 010h ; return to text mode
 	mov ax,4c00h
 	int 21h
+; --------------------------
+; the following will be the win or lose cases:
+win:
+	clearScreen
+	mov ah,09h
+	lea dx,[winMsg]
+	int 21h
+	and ax,0
+	int 16h
+	jmp exit
+; --------------------------
+loss:
+	clearScreen
+	mov ah,09h
+	lea dx,[lossMsg]
+	int 21h
+	and ax,0
+	int 16h
+	jmp exit
 ; --------------------------
 ;procedures:
 	include "src\drawBi~1.asm" ;drawBitmap
