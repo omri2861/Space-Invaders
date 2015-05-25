@@ -73,13 +73,48 @@ DATASEG
 		   dw 10 dup (30)
 		   dw 9 dup (50)
 	aliens dw 30
-	gameFlag db 0
+	winFlag db 0
+	lossFlag db 0
 	alienYMSecs db 0
 	alienYSecs db 0
 	alienMSecs db 0
 	alienDirection db 1
 	winMsg db "Well Done!",0Ah,"You have beated all the aliens and savedmankind!",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
 	lossMsg db "GAME OVER!",0Ah,"The aliens have reached the earth and",0Ah,"they will destroy all mankind.",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
+	menuMsg db 9  dup (0ah)
+	    db 15 dup (" ")
+		db "Play Game!",0ah
+		db 0ah
+		db 14 dup (" ")
+		db "Instructions",0ah
+		db 0ah
+		db 18 dup (" ")
+		db "Exit"
+		db '$'
+	Marker db 15,00,00,00,00,00,00,00
+	       db 15,15,00,00,00,00,00,00
+	       db 15,15,15,00,00,00,00,00
+	       db 15,15,15,15,00,00,00,00
+	       db 15,15,15,15,00,00,00,00
+	       db 15,15,15,00,00,00,00,00
+	       db 15,15,00,00,00,00,00,00
+	       db 15,00,00,00,00,00,00,00
+	MarkerX dw 104
+	MarkerY dw 72
+	MarkerW dw 8
+	MarkerH dw 8
+	Marked db 1
+	instructions db "Welcome to Space Invaders OL!",0Ah
+				 db "In the game, you are the spaceship.",0ah
+				 db "The fate of the world is in your hands!",0Ah
+				 db "You must eliminate all the aliens, before they get to you and kill you!",0ah
+				 db "But they won't stop with you, they will not rest until they see the end of ",0Ah,"mankind!",0ah
+				 db 0Ah,0Ah,0Ah,0Ah
+				 db "Use the right and lef arrow keys to move, and the spacebar to blast the aliens",0Ah,"with your laser cannon.",0ah
+				 db "To win, hit all the aliens before they get to your spaceship's height line.",0ah
+				 db "To pause, press the Esc key.",0ah
+				 db "Press any key to return to the menu."
+				 db '$'
 ; --------------------------
 ;Macros:
 	include "src\macros.asm"
@@ -94,6 +129,13 @@ start:
 	int 10h ;enter graphics mode 13h
 ; --------------------------
 ; The code starts here:
+mainMenu:
+	call menu
+	and al,1
+	jnz startGame
+	jmp exit
+	
+	
 startGame:
 	;draw the spaceship and the aliens on the screen:
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
@@ -112,7 +154,7 @@ cycle:
 	;check if user wants to end game, and end it if he does:
 	cmp ah,1
 	jnz dontExitManually	; 'esc' (scan code 1) means exit
-	jmp exit ;this is because a conditional jump is out of range
+	jmp mainMenu ;this is because a conditional jump is out of range
 	
 dontExitManually:
 	;check if user asked to move spaceship, and move it if he did:
@@ -138,9 +180,6 @@ keyAnswered:
 	;before moving for the next cycle, some internal processes need to be done:
 	
 	updateAliensPositions aliens,alienX,alienY,alienW,alienH
-	and [byte ptr gameFlag],1
-	jz didntLoose
-	jmp loss
 	;due to relative jump out of range
 didntLoose:
 	
@@ -153,14 +192,16 @@ didntLoose:
 	
 noBullet:
 	
-	lea dx,[alienX]
+	lea dx,[alienY]
 	push dx
 	mov dx,[aliens]
 	push dx
 	call updateGame
 	
-	and [byte ptr gameFlag],1
+	and [byte ptr winFlag],1
 	jnz win
+	and [byte ptr lossFlag],1
+	jnz loss
 	
 	jmp cycle ;repeat the process until either 'esc' is pressed, the user killed all aliens, or the aliens have reached the spaceship
 	
@@ -203,6 +244,7 @@ loss:
 	include "src\findMin.asm"
 	include "src\update~1.asm" ;updateAliens
 	include "src\update~3.asm" ;updateGame
+	include "src\menu.asm"
 ; --------------------------
 END start
 

@@ -124,12 +124,6 @@ aliensYloop:
 	and [word ptr bx],0FFFFh ; if 0, the alien is dead and shouldn't be moved
 	jz skipYupdate
 	inc [word ptr bx];move the alien one pixel down
-	mov dx,[word ptr bx] ; move the new y to dx
-	add dx,[bp+6] ; add the alien's height, to check the bottom of the alien
-	cmp dx,[spaceshipY] ; if the alien has passed the spaceship Y, its game over, the user lost
-	jb skipYupdate
-	or [byte ptr gameFlag],1 ;update the game flag if it is indeed game over
-	jmp aliensUpdated
 skipYupdate:
 	add bx,2
 	loop aliensYloop

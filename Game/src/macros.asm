@@ -5,6 +5,9 @@
 	rightKey equ 77
 	leftKey  equ 75
 	spacebar equ 39h
+	enterKey equ 1Ch
+	upKey equ 48h
+	downKey equ 50h
 	bitmapHeight equ [bp+4]
 	bitmapWidth equ [bp+6]
 	bitmapY equ [bp+8]

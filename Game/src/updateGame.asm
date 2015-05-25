@@ -15,13 +15,26 @@ proc updateGame
 	mov bx,aliensArray
 	and si,0
 	mov cx,Count
-checkForAlien:
-	and [word ptr bx+si],0FFFFh
-	jnz gameOn ; if there is one even alien that is not dead yet, the game is still on
+checkForLoss:
+	mov ax,[word ptr bx+si]
+	add ax,[alienH]
+	cmp ax,[spaceshipY]
+	jae gameLoss
 	add si,2
-	loop checkForAlien
-	or [byte ptr gameFlag],1 ;all aliens are 0, meaning their all dead and the game is over
-gameOn:
+	loop checkForLoss
+	
+	mov bx,aliensArray
+	and si,0
+	mov cx,Count
+checkForWin:
+	mov ax,[word ptr bx+si]
+	or ax,0
+	jnz gameUpdated	; if there is one even alien that is not dead yet, the game is still on
+	add si,2
+	loop checkForWin
+	or [byte ptr winFlag],1
+	
+gameUpdated:
 	;re-store the following registers:
 	pop bx
 	pop cx
@@ -29,4 +42,8 @@ gameOn:
 	
 	pop bp
 	ret 4
+
+gameLoss:
+	or [byte ptr lossFlag],1 ;all aliens are 0, meaning their all dead and the game is over
+	jmp gameUpdated
 endp updateGame
