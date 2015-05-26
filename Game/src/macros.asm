@@ -54,11 +54,16 @@ macro updateAliensPositions objCount,objX,objY,objW,objH
 ; this macro will simplify the use of the update aliens procedure.
 ; see details under "updateAliens" procedure
 ; registers destroyed: dx
-	mov dx,[objCount]
+	getCount objCount
 	push dx
-	lea dx,[objx]
+	lea dx,[objCount]
 	push dx
-	lea dx,[objY]
+	call getArrayRef
+	lea dx,[word ptr objX]
+	add dx,ax
+	push dx
+	lea dx,[word ptr objY]
+	add dx,ax
 	push dx
 	mov dx,[objW]
 	push dx
@@ -71,13 +76,18 @@ macro summonAliens objCount,obj,objx,objy,objw,objh
 ; this macro will simplify the use of the draw aliens procedure.
 ; for more info look under 'drawAliens' procedure
 ; registers destroyed: dx
-	mov dx,[objcount]
+	getCount objCount
 	push dx
 	lea dx,[obj]
 	push dx
+	lea dx,[objCount]
+	push dx
+	call getArrayRef
 	lea dx,[word ptr objX]
+	add dx,ax
 	push dx
 	lea dx,[word ptr objY]
+	add dx,ax
 	push dx
 	mov dx,[objW]
 	push dx
@@ -94,11 +104,16 @@ macro checkIfHit objCount,objX,objY,objW,objH
 	push dx
 	mov dx,[objW]
 	push dx
-	lea dx,[objX]
+	lea dx,[objCount]
 	push dx
-	lea dx,[objY]
+	call getArrayRef
+	lea dx,[word ptr objX]
+	add dx,ax
 	push dx
-	mov dx,[objCount]
+	lea dx,[word ptr objY]
+	add dx,ax
+	push dx
+	getCount objCount
 	push dx
 	call checkForHit
 endm
@@ -117,4 +132,18 @@ macro clearScreen
 	push dx
 	call deleteBitmap
 endm
+; --------------------------
+macro getCount count
+; this will return the alien count in dx
+; on entry: nothing
+; on exit: returns count in ax
+; registers destroyed: bx
+	mov bl,[stage]
+	dec bl
+	and bh,0
+	shl bx,1
+	mov dx,[count+bx]
+endm
+; --------------------------
+
 ; --------------------------

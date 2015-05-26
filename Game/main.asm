@@ -68,11 +68,14 @@ DATASEG
 		  ;see the alien by clicking ctrl+F then search for "15"
 	alienW dw 15
 	alienH dw 10
-	alienX dw 1 dup (45,70,95,120,145,170,195,220,245,270,295,57,82,107,132,157,182,207,232,257,282,69,94,119,144,169,194,219,244,269)
+	alienX dw 45,70,95,120,145,170,195,220,245,270,295,57,82,107,132,157,182,207,232,257,282,69,94,119,144,169,194,219,244,269
+		   dw 45,70,95,120
 	alienY dw 11 dup (10)
 		   dw 10 dup (30)
 		   dw 9 dup (50)
-	aliens dw 30
+		   dw 4 dup (80)
+	aliens dw 30,4
+	stage db 1
 	winFlag db 0
 	lossFlag db 0
 	alienYMSecs db 0
@@ -192,9 +195,13 @@ didntLoose:
 	
 noBullet:
 	
-	lea dx,[alienY]
+	lea dx,[aliens]
 	push dx
-	mov dx,[aliens]
+	call getArrayRef
+	lea dx,[word ptr alienY]
+	add dx,ax
+	push dx
+	getCount aliens
 	push dx
 	call updateGame
 	
@@ -216,6 +223,13 @@ exit:
 ; the following will be the win or lose cases:
 win:
 	clearScreen
+	inc [byte ptr stage]
+	cmp [byte ptr stage],2
+	ja gameFinished
+	and [byte ptr winFlag],0
+	and [byte ptr lossFlag],0
+	jmp startGame
+gameFinished:
 	mov ah,09h
 	lea dx,[winMsg]
 	int 21h
@@ -245,6 +259,41 @@ loss:
 	include "src\update~1.asm" ;updateAliens
 	include "src\update~3.asm" ;updateGame
 	include "src\menu.asm"
+; --------------------------
+proc getArrayRef
+	push bp
+	mov bp,sp
+	
+	push si
+	push bx
+	push cx
+	
+	mov bx,[bp+4]
+	and ah,0
+	mov al,[stage]
+	dec ax
+	jz arrayRefFound
+	dec ax
+	shl ax,1
+	mov si,ax
+	and ax,0
+	
+findArrayRef:
+	add ax,[word ptr bx+si]
+	cmp si,0
+	jz arrayRefFound
+	sub si,2
+	jmp findArrayRef
+	
+arrayRefFound:
+	shl ax,1
+	pop cx
+	pop bx
+	pop si
+	
+	pop bp
+	ret 2
+endp getArrayRef
 ; --------------------------
 END start
 

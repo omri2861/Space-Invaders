@@ -82,8 +82,10 @@ bulletHit:
 	push dx
 	call deleteBitmap ;delete the alien that was hit
 	;note: this isn't used by macro due to illegal memory reference with the macro
-	and [word ptr alienX+si],0
-	and [word ptr alienY+si],0 ;kill the alien
+	mov bx,[bp+8]
+	and [word ptr bx+si],0
+	mov bx,[bp+6]
+	and [word ptr bx+si],0 ;kill the alien
 	DeleteImage bulletX,bulletY,bulletW,bulletH
 	and [bulletFlag],0
 	jmp hitApplied
