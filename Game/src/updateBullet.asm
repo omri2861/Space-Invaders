@@ -16,7 +16,7 @@ proc updateBullet
 	je BulletUpdated
 
 updateAllowed:
-	cmp [word ptr bulletY],8 ;bullet travels 6 pixels every time, so we take a safe distance from the top
+	cmp [word ptr bulletY],10 ;in these top pixels the level and score will be written, so it's not letting the bullet hit them
 	ja bulletInRange
 	; if below 6, bullet is out of range and needs to be deleted:
 	DeleteImage bulletX,bulletY,bulletW,bulletH

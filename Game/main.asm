@@ -68,13 +68,44 @@ DATASEG
 		  ;see the alien by clicking ctrl+F then search for "15"
 	alienW dw 15
 	alienH dw 10
-	alienX dw 45,70,95,120,145,170,195,220,245,270,295,57,82,107,132,157,182,207,232,257,282,69,94,119,144,169,194,219,244,269
-		   dw 45,70,95,120
-	alienY dw 11 dup (10)
-		   dw 10 dup (30)
-		   dw 9 dup (50)
-		   dw 4 dup (80)
-	aliens dw 30,4
+	alienX   dw 45,70,95,120,145,170,195,220,245,270,295,57,82,107,132,157,182,207,232,257,282,69,94,119,144,169,194,219,244,269
+			 ;stage 2:
+		     dw 6 dup(30,55,80,105)
+			 dw 6 dup(290,265,240,215)
+			 ;stage 3:
+			 dw 45,70,95  ,145,170,195  ,245,270,295
+			 dw    70,95,120,  170,  220,245,270
+			 dw 45, 95,120,145,    195,220,245  ,295
+			 dw    70,     145,170,195      ,270
+			 dw       95,        170,      245
+			 dw          120,          220
+			 
+		   
+	alienY   dw 11 dup (10)
+		     dw 10 dup (30)
+		     dw 9 dup (50)
+		     ;stage 2:
+		     dw 4 dup (10)
+			 dw 4 dup (25)
+			 dw 4 dup (40)
+			 dw 4 dup (55)
+			 dw 4 dup (70)
+			 dw 4 dup (85)
+			 dw 4 dup (10)
+			 dw 4 dup (25)
+			 dw 4 dup (40)
+			 dw 4 dup (55)
+			 dw 4 dup (70)
+			 dw 4 dup (85)
+			 ;stage 3:
+			 dw 9 dup (10)
+			 dw 7 dup (25)
+			 dw 8 dup (40)
+			 dw 5 dup (55)
+			 dw 3 dup (70)
+			 dw 2 dup (85)
+			 
+	aliens dw 30,48,34
 	stage db 1
 	winFlag db 0
 	lossFlag db 0
@@ -118,6 +149,13 @@ DATASEG
 				 db "To pause, press the Esc key.",0ah
 				 db "Press any key to return to the menu."
 				 db '$'
+	stageMsg db "Stage ",'$'
+	stageClearMsg db 9  dup (0Ah)
+				  db 13 dup (' ')
+				  db "Stage Cleared!"
+				  db 0ah
+				  db " press any key to move to the next stage"
+				  db '$'
 ; --------------------------
 ;Macros:
 	include "src\macros.asm"
@@ -140,9 +178,20 @@ mainMenu:
 	
 	
 startGame:
+	;write what stage is it:
+	lea dx,[stageMsg]
+	mov ah,9
+	int 21h
+	mov dl,[byte ptr stage]
+	add dl,30h
+	mov ah,2
+	int 21h
+	mov dl,13
+	int 21h
 	;draw the spaceship and the aliens on the screen:
 	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
 	summonAliens aliens,alien,alienX,alienY,alienW,alienH
+	
 cycle:
 ;look for a keystroke:
 	mov ah, 0bh
@@ -224,10 +273,17 @@ exit:
 win:
 	clearScreen
 	inc [byte ptr stage]
-	cmp [byte ptr stage],2
+	cmp [byte ptr stage],3
 	ja gameFinished
 	and [byte ptr winFlag],0
 	and [byte ptr lossFlag],0
+	lea dx,[StageclearMsg]
+	mov ah,9
+	int 21h
+	and ax,0
+	int 16h
+	mov ax,13h
+	int 10h
 	jmp startGame
 gameFinished:
 	mov ah,09h
