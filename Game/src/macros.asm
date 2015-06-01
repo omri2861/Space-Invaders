@@ -145,5 +145,22 @@ macro getCount count
 	mov dx,[count+bx]
 endm
 ; --------------------------
-
+macro checkIfHitShootNew objCount,objX,objY,objW,objH
+	mov dx,[objH]
+	push dx
+	mov dx,[objW]
+	push dx
+	lea dx,[objCount]
+	push dx
+	call getArrayRef
+	lea dx,[word ptr objX]
+	add dx,ax
+	push dx
+	lea dx,[word ptr objY]
+	add dx,ax
+	push dx
+	getCount objCount
+	push dx
+	call checkForHit
+endm
 ; --------------------------

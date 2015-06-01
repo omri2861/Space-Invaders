@@ -227,6 +227,7 @@ dontMoveSpaceship:
 	and [byte ptr bulletFlag],1
 	jnz keyAnswered ;there is already a bullet on the screen, so the spacebar press will be ignored
 	call shootNew
+	checkIfHitShootNew aliens,alienX,alienY,alienW,alienH
 	
 keyAnswered:
 	;before moving for the next cycle, some internal processes need to be done:
