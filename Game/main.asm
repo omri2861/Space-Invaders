@@ -157,6 +157,20 @@ DATASEG
 				  db " press any key to move to the next stage"
 				  db '$'
 ; --------------------------
+segment PictureData
+	StartPictX   	dw 0
+	StartPictY   	dw 0
+	WidthPict    	dw ? ;(if 320*200 than not necessary. In ;PCX must be even)
+	HeightPict   	dw ? 
+	LengthPict   	dw ? 
+	Handle       	dw 0 ;(a number to recognize the file)
+	FileLength	dw ? 
+	FileName     	db '1.pcx', 0
+	Buffer       	db 64000 dup(?) 
+	Point_Fname  	dd FileName
+	Point_Buffer	dd Buffer
+ends
+; --------------------------
 ;Macros:
 	include "src\macros.asm"
 ; --------------------------
