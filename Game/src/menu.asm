@@ -1,11 +1,21 @@
 ; ---------------------------------------------------
 proc menu
 	initMenu:
-	clearScreen
-	lea dx,[menuMsg]
-	mov ah,9h
-	int 21h
+	mov ax,pictureData
+	mov ds,ax
+	lea dx,[ds:menuName]
+	push dx
+	lea dx,[ds:buffer]
+	push dx
+	call printPict
+	mov ax,background
+	mov ds,ax
+	call loadBG
+	mov ax,@data
+	mov ds,ax
 	drawImage Marker,MarkerX,MarkerY,MarkerW,MarkerH
+
+
 menuCycle:
 	and ax,0
 	int 16h

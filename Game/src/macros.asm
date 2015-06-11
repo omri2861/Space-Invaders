@@ -17,6 +17,13 @@
 	arrayPointer equ [bp+6]
 	aliensAmount equ [bp+12]
 	aliensXRef equ [bp+10]
+	StartPictX equ bp-2
+	StartPictY equ bp-4
+	WidthPict  equ bp-6
+	HeightPict equ bp-8
+	LengthPict equ bp-10
+	Handle     equ bp-12
+	FileLength equ bp-14
 ; -------------------------
 ; this macro will simplify the use of the draw bitmap procedure.
 ; see details under "drawBitmap" procedure

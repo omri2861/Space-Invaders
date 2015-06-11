@@ -28,9 +28,9 @@ innerDeletion:
 	push cx
 	mov cx,bx
 	inc bx
-	and al,0
-	mov ah,0Ch
-	int 10h ;delete the pixel on the screen
+	push dx
+	call deletePixel
+	pop dx
 	pop cx
 	loop innerDeletion
 	
@@ -49,4 +49,32 @@ innerDeletion:
 	pop bp
 	ret 8
 endp deleteBitmap
+; -------------------------------------
+proc deletePixel
+; on entry: al-color
+;			cx-x
+;			dx-y
+;			segment of background
+	;store Following:
+	
+	mov ax,dx
+	shl ax,8
+	shl dx,6
+	add ax,dx
+	add ax,cx
+	mov di,ax
+	
+	mov ax,background
+	mov ds,ax
+	push si
+	mov si,di
+	mov al,[ds:si]
+	mov [es:di],al
+	pop si
+	mov ax,@data
+	mov ds,ax
+	
+	ret
+endp deletePixel
+	
 

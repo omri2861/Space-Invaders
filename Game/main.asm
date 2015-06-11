@@ -18,11 +18,11 @@ DATASEG
 	spaceship db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,25,25,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 			  db 00,00,00,00,00,00,00,00,00,00,00,00,00,25,25,25,25,00,00,00,00,00,00,00,00,00,00,00,00,00
 			  db 00,00,00,00,00,00,00,00,00,00,00,00,00,25,25,25,25,00,00,00,00,00,00,00,00,00,00,00,00,00
-			  db 00,00,00,00,00,00,00,00,00,00,00,00,25,25,00,00,25,25,00,00,00,00,00,00,00,00,00,00,00,00
-			  db 00,00,00,00,00,00,00,00,00,00,00,25,25,00,15,00,00,25,25,00,00,00,00,00,00,00,00,00,00,00
-			  db 00,00,00,00,00,00,00,00,00,00,00,25,25,00,00,00,00,25,25,00,00,00,00,00,00,00,00,00,00,00
-			  db 00,00,00,00,00,00,00,00,00,00,00,25,25,00,00,00,00,25,25,00,00,00,00,00,00,00,00,00,00,00
-			  db 00,00,00,00,00,00,00,00,00,00,00,25,25,00,25,25,00,25,25,00,00,00,00,00,00,00,00,00,00,00
+			  db 00,00,00,00,00,00,00,00,00,00,00,00,25,25,16,16,25,25,00,00,00,00,00,00,00,00,00,00,00,00
+			  db 00,00,00,00,00,00,00,00,00,00,00,25,25,16,15,16,16,25,25,00,00,00,00,00,00,00,00,00,00,00
+			  db 00,00,00,00,00,00,00,00,00,00,00,25,25,16,16,16,16,25,25,00,00,00,00,00,00,00,00,00,00,00
+			  db 00,00,00,00,00,00,00,00,00,00,00,25,25,16,16,16,16,25,25,00,00,00,00,00,00,00,00,00,00,00
+			  db 00,00,00,00,00,00,00,00,00,00,00,25,25,16,25,25,16,25,25,00,00,00,00,00,00,00,00,00,00,00
 			  db 00,00,00,00,00,00,00,00,00,00,00,00,25,25,25,25,25,25,00,00,00,00,00,00,00,00,00,00,00,00
 			  db 00,00,00,00,00,00,00,00,00,00,00,20,20,25,25,25,25,20,20,00,00,00,00,00,00,00,00,00,00,00
 			  db 00,00,00,00,00,00,00,00,00,00,20,20,20,20,25,25,20,20,20,20,00,00,00,00,00,00,00,00,00,00
@@ -56,14 +56,14 @@ DATASEG
 	bulletFlag db 0 ;is there a bullet on the screen?
 	bulletMSecs db 0
 	Alien db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-		  db 00,00,00,15,00,00,00,00,00,00,00,15,00,00,00
-		  db 00,00,00,00,15,00,00,00,00,00,15,00,00,00,00
-		  db 00,00,00,15,15,15,15,15,15,15,15,15,00,00,00
-		  db 00,00,15,15,00,15,15,15,15,15,00,15,15,00,00
-		  db 00,15,15,15,15,15,15,15,15,15,15,15,15,15,00
-		  db 00,15,00,15,15,15,15,15,15,15,15,15,00,15,00
-		  db 00,15,00,15,00,00,00,00,00,00,00,15,00,15,00
-		  db 00,00,00,00,15,15,15,00,15,15,15,00,00,00,00
+		  db 00,00,00,16,00,00,00,00,00,00,00,16,00,00,00
+		  db 00,00,00,00,16,00,00,00,00,00,16,00,00,00,00
+		  db 00,00,00,16,16,16,16,16,16,16,16,16,00,00,00
+		  db 00,00,16,16,00,16,16,16,16,16,00,16,16,00,00
+		  db 00,16,16,16,16,16,16,16,16,16,16,16,16,16,00
+		  db 00,16,00,16,16,16,16,16,16,16,16,16,00,16,00
+		  db 00,16,00,16,00,00,00,00,00,00,00,16,00,16,00
+		  db 00,00,00,00,16,16,16,00,16,16,16,00,00,00,00
 		  db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 		  ;see the alien by clicking ctrl+F then search for "15"
 	alienW dw 15
@@ -113,7 +113,7 @@ DATASEG
 	alienYSecs db 0
 	alienMSecs db 0
 	alienDirection db 1
-	winMsg db "Well Done!",0Ah,"You have beated all the aliens and savedmankind!",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
+	winMsg db "Well Done!",0Ah,"You vanquished all the aliens and savedmankind!",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
 	lossMsg db "GAME OVER!",0Ah,"The aliens have reached the earth and",0Ah,"they will destroy all mankind.",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
 	menuMsg db 9  dup (0ah)
 	    db 15 dup (" ")
@@ -133,8 +133,8 @@ DATASEG
 	       db 15,15,15,00,00,00,00,00
 	       db 15,15,00,00,00,00,00,00
 	       db 15,00,00,00,00,00,00,00
-	MarkerX dw 104
-	MarkerY dw 72
+	MarkerX dw 78
+	MarkerY dw 101
 	MarkerW dw 8
 	MarkerH dw 8
 	Marked db 1
@@ -158,17 +158,13 @@ DATASEG
 				  db '$'
 ; --------------------------
 segment PictureData
-	StartPictX   	dw 0
-	StartPictY   	dw 0
-	WidthPict    	dw ? ;(if 320*200 than not necessary. In ;PCX must be even)
-	HeightPict   	dw ? 
-	LengthPict   	dw ? 
-	Handle       	dw 0 ;(a number to recognize the file)
-	FileLength	dw ? 
-	FileName     	db '1.pcx', 0
+	menuName     	db 'resource\menu.pcx', 0
+	bgName     	db 'resource\bg.pcx', 0
 	Buffer       	db 64000 dup(?) 
-	Point_Fname  	dd FileName
-	Point_Buffer	dd Buffer
+ends
+; --------------------------
+segment background
+	bg db 64000 dup (0)
 ends
 ; --------------------------
 ;Macros:
@@ -189,9 +185,21 @@ mainMenu:
 	and al,1
 	jnz startGame
 	jmp exit
-	
-	
 startGame:
+	mov ax,pictureData
+	mov ds,ax
+	lea dx,[ds:bgName]
+	push dx
+	lea dx,[ds:buffer]
+	push dx
+	call printPict
+	mov ax,background
+	mov ds,ax
+	call loadBG
+	mov ax,@data
+	mov ds,ax
+
+
 	;write what stage is it:
 	lea dx,[stageMsg]
 	mov ah,9
@@ -330,6 +338,7 @@ loss:
 	include "src\update~1.asm" ;updateAliens
 	include "src\update~3.asm" ;updateGame
 	include "src\menu.asm"
+	include "src\printp~1.asm"
 ; --------------------------
 proc getArrayRef
 	push bp
@@ -365,6 +374,20 @@ arrayRefFound:
 	pop bp
 	ret 2
 endp getArrayRef
+; --------------------------
+proc loadBG
+	and si,0
+	and di,0
+	mov cx,64000
+loadBGLoop:
+	mov al,[es:di]
+	inc di
+	mov [ds:si],al
+	inc si
+	loop loadBGLoop
+	
+	ret
+endp loadBG
 ; --------------------------
 END start
 
