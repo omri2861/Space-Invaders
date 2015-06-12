@@ -122,7 +122,7 @@ DATASEG
 			 dw 3 dup (86)
 			 dw 2 dup (105)
 	aliens dw 30,40,34
-	stage db 3
+	stage db 1
 	winFlag db 0
 	lossFlag db 0
 	alienYMSecs db 0
