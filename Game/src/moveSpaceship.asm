@@ -15,7 +15,7 @@ proc MoveSpaceship
 	and al,1
 	jz notRight
 	
-	cmp [spaceshipX],289 ;make sure that space ship didn't reach the end of the screen
+	cmp [spaceshipX],278 ;make sure that space ship didn't reach the end of the screen
 	jae spaceshipMoved ;if so, don't move it
 	mov cx,3 ;current speed- 3 pixels per press
 	;this system allows to control the spaceship's movement speed just by changing cx's value 

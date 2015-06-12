@@ -197,6 +197,10 @@ start:
 ; --------------------------
 ; The code starts here:
 mainMenu:
+	mov dx,offset menuName
+	push dx
+	mov dx,offset buffer
+	push dx
 	call menu
 	and al,1
 	jnz startGame
@@ -392,15 +396,24 @@ arrayRefFound:
 endp getArrayRef
 ; --------------------------
 proc loadBG
+;on entry: nothing
+;on exit: background loaded into background segment
+;registers destroyed: AX,SI,DI
+;note: this procedure must be used after printing an image! otherwise, it will also store the bitmaps!
 	and si,0
 	and di,0
 	mov cx,64000
+	push ds ;save ds
+	mov ax,background
+	mov ds,ax
 loadBGLoop:
+	;simply move the byte from the screen to the memory: 
 	mov al,[es:di]
 	inc di
 	mov [ds:si],al
 	inc si
 	loop loadBGLoop
+	pop ds ;restore ds
 	
 	ret
 endp loadBG

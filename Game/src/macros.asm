@@ -24,6 +24,7 @@
 	LengthPict equ bp-10
 	Handle     equ bp-12
 	FileLength equ bp-14
+	selection equ [word ptr bp-2]
 ; -------------------------
 ; this macro will simplify the use of the draw bitmap procedure.
 ; see details under "drawBitmap" procedure

@@ -1,83 +1,132 @@
 ; ---------------------------------------------------
 proc menu
-	initMenu:
+;this procedure will initialize the menu
+;on entry:
+;on exit: returns a flag in al- exit or game.
+
+	push bp
+	mov bp,sp
+	sub sp,2
+	and [byte ptr bulletFlag],0
+	
+initMenu:
+	push ds ;store ds
+	mov dx,[bp+6]
+	push dx
+	mov dx,[bp+4]
+	push dx
 	mov ax,pictureData
 	mov ds,ax
-	lea dx,[ds:menuName]
-	push dx
-	lea dx,[ds:buffer]
-	push dx
 	call printPict
-	mov ax,background
-	mov ds,ax
+	pop ds ;restore ds
 	call loadBG
-	mov ax,@data
-	mov ds,ax
-	drawImage Marker,MarkerX,MarkerY,MarkerW,MarkerH
-
-
+	
+;firstly, draw the spaceship:
+	DrawImage spaceship,spaceshipX,spaceshipY,spaceshipW,spaceshipH
+;now, begin with the menu cycle:
 menuCycle:
+;check for a key:
+	and selection,0
+	mov ah,0Bh
+	int 21h
+	and al,1
+	jz noMenuAction
 	and ax,0
 	int 16h
+	
+	cmp ah,rightKey
+	je selectionEntered
+	cmp ah,leftKey
+	jne noSelection
+selectionEntered:
+	shr ax,10
+	and ax,1 ;al now has a flag: 0=left, 1=right
+	call moveSpaceship
+
+noSelection:
 	cmp ah,spacebar
-	je optionChose
-	cmp ah,enterKey
-	je optionChose
-	cmp ah,upKey
-	je KeyHit
-	cmp ah,downKey
-	je KeyHit
+	jne noMenuAction
+	or [bulletFlag],0
+	jnz noMenuAction
+	call shootNew
+
+noMenuAction:
+	and [bulletFlag],1
+	jz noMenuBullet 
+	call updateBullet
+	call checkForHitMenu
+	cmp selection,0
+	jnz returnSelection
+noMenuBullet:
 	jmp menuCycle
-KeyHit:
-	shr ah,3
-	mov al,ah
-	and ax,1
-	call moveMarker
-	drawImage Marker,MarkerX,MarkerY,MarkerW,MarkerH
-	jmp menuCycle
-optionChose:
-	cmp [byte ptr marked],2
-	jne notInstructions
-	mov ax,02h
-	int 10h
+	
+exitMenu:
+	add sp,2
+	pop bp
+	ret 4
+
+returnSelection:
+	cmp selection,1
+	jne dontPlayGame
+	mov al,0FFh
+	jmp exitMenu
+dontPlayGame:
+	cmp selection,2
+	je dsiplayInstructions
+	and al,0
+	jmp exitMenu
+
+dsiplayInstructions:
 	lea dx,[instructions]
 	mov ah,9
 	int 21h
 	and ax,0
 	int 16h
-	mov ax,13h
-	int 10h
+	and [word ptr bulletY],0
+	and [word ptr bulletX],0 ;reset the bullet's position because when checking for hit, we might encounter the old position of a deleted bullet 
+	and [bulletFlag],0
 	jmp initMenu
-notInstructions:
-	and al,0
-	cmp [byte ptr marked],3
-	je exitMenu
-	mov al,0FFh
-exitMenu: 
-	mov dl,al
-	mov ax,13h
-	int 10h
-	and ax,0
-	mov al,dl
-	ret
+	
 endp menu
-; ---------------------------------------------------
-proc moveMarker
-	and al,1
-	jz markerDown
-	cmp [byte ptr marked],1
-	jbe markerMoved
-	dec [byte ptr marked]
-	deleteImage markerX,markerY,markerW,markerH
-	sub [word ptr markerY],16
-	jmp markerMoved
-markerDown:
-	cmp [byte ptr marked],3
-	jae markerMoved
-	inc [byte ptr marked]
-	deleteImage markerX,markerY,markerW,markerH
-	add [word ptr markerY],16
-markerMoved:
+;---------------------------------------------------
+proc checkForHitMenu
+;this procedure checks if the bullet had hit a selection. if so, it saves it in the 'selection' local variable.
+;on enrty: nothing
+;on exit: selection local variable updated
+	push ax ;store ax
+	
+	mov ax,[bulletX]
+	cmp ax,54
+	jbe maybeQuitSelected
+	add ax,[bulletW]
+	cmp ax,71
+	jb selectionUpdated
+	sub ax,[bulletW]
+	cmp ax,200
+	jbe maybePlaySelected
+	cmp ax,312
+	ja selectionUpdated
+;maybe instructions selected:
+	add ax,[bulletW]
+	cmp ax,195
+	jb selectionUpdated
+	cmp [bulletY],78
+	ja selectionUpdated
+	mov selection,2
+	jmp selectionUpdated
+	
+maybeQuitSelected:
+	cmp [bulletY],125
+	ja selectionUpdated
+	mov selection,3
+	jmp selectionUpdated
+
+maybePlaySelected:
+	cmp [bulletY],105
+	jae selectionUpdated
+	mov selection,1
+	
+selectionUpdated:
+	pop ax ;restore ax
 	ret
-endp moveMarker
-; ---------------------------------------------------
+endp checkForHitMenu
