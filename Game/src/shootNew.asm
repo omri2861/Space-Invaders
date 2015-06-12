@@ -52,7 +52,7 @@ proc shootingSound
 	push cx
 	push ax
 	
-	mov cx,1000 ; Number of times to repeat whole routine.
+	mov cx,2000 ; Number of times to repeat whole routine.
 	mov bx,1 ; Frequency value.
 
 	mov al,10110110b    ; The port I guess, not really sure
@@ -70,12 +70,12 @@ nextShootingFrequency: ; This is were we will jump back to 2000 times.
 	out 61h,al ; Copy it to port 61H of the PPI Chip to turn ON the speaker.
 
 	push cx
-	mov cx,100 ; Repeat the delay loop 100 times
+	mov cx,350 ; Repeat the delay loop 100 times
 shootingDelayLoop: ; Here is where we loop back too.
 	loop shootingDelayLoop       ; Jump repeatedly to DELAY_LOOP until CX = 0
 	pop cx
 
-	add bx,2 ; Incrementing the value of BX lowers the frequency each time we repeat the whole routine.
+	add bx,1 ; Incrementing the value of BX lowers the frequency each time we repeat the whole routine.
 
 	loop nextShootingFrequency
 ;time to turn the speaker off:
