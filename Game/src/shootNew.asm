@@ -70,7 +70,7 @@ nextShootingFrequency: ; This is were we will jump back to 2000 times.
 	out 61h,al ; Copy it to port 61H of the PPI Chip to turn ON the speaker.
 
 	push cx
-	mov cx,350 ; Repeat the delay loop 100 times
+	mov cx,520 ; Repeat the delay loop 100 times
 shootingDelayLoop: ; Here is where we loop back too.
 	loop shootingDelayLoop       ; Jump repeatedly to DELAY_LOOP until CX = 0
 	pop cx

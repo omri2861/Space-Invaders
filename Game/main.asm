@@ -89,8 +89,8 @@ DATASEG
 	alienH dw 19
 	alienX   dw 45,70,95,120,145,170,195,220,245,270,295,57,82,107,132,157,182,207,232,257,282,69,94,119,144,169,194,219,244,269
 			 ;stage 2:
-		     dw 6 dup(30,55,80,105)
-			 dw 6 dup(290,265,240,215)
+		     dw 5 dup(30,55,80,105)
+			 dw 5 dup(290,265,240,215)
 			 ;stage 3:
 			 dw 45,70,95  ,145,170,195  ,245,270,295
 			 dw    70,95,120,  170,  220,245,270
@@ -105,34 +105,31 @@ DATASEG
 		     dw 9 dup (50)
 		     ;stage 2:
 		     dw 4 dup (10)
-			 dw 4 dup (25)
-			 dw 4 dup (40)
-			 dw 4 dup (55)
-			 dw 4 dup (70)
-			 dw 4 dup (85)
+			 dw 4 dup (29)
+			 dw 4 dup (48)
+			 dw 4 dup (67)
+			 dw 4 dup (86)
 			 dw 4 dup (10)
-			 dw 4 dup (25)
-			 dw 4 dup (40)
-			 dw 4 dup (55)
-			 dw 4 dup (70)
-			 dw 4 dup (85)
+			 dw 4 dup (29)
+			 dw 4 dup (48)
+			 dw 4 dup (67)
+			 dw 4 dup (86)
 			 ;stage 3:
 			 dw 9 dup (10)
-			 dw 7 dup (25)
-			 dw 8 dup (40)
-			 dw 5 dup (55)
-			 dw 3 dup (70)
-			 dw 2 dup (85)
-			 
-	aliens dw 30,48,34
-	stage db 1
+			 dw 7 dup (29)
+			 dw 8 dup (48)
+			 dw 5 dup (67)
+			 dw 3 dup (86)
+			 dw 2 dup (105)
+	aliens dw 30,40,34
+	stage db 3
 	winFlag db 0
 	lossFlag db 0
 	alienYMSecs db 0
 	alienYSecs db 0
 	alienMSecs db 0
 	alienDirection db 1
-	winMsg db "Well Done!",0Ah,"You vanquished all the aliens and savedmankind!",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
+	winMsg db "Well Done!",0Ah,"You vanquished all the aliens and saved mankind!",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
 	lossMsg db "GAME OVER!",0Ah,"The aliens have reached the earth and",0Ah,"they will destroy all mankind.",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
 	menuMsg db 9  dup (0ah)
 	    db 15 dup (" ")
