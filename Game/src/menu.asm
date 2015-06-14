@@ -61,6 +61,9 @@ noMenuBullet:
 	jmp menuCycle
 	
 exitMenu:
+	and [word ptr bulletY],0
+	and [word ptr bulletX],0 ;reset the bullet's position because when checking for hit, we might encounter the old position of a deleted bullet 
+	and [byte ptr bulletFlag],0
 	add sp,2
 	pop bp
 	ret 4
@@ -77,11 +80,21 @@ dontPlayGame:
 	jmp exitMenu
 
 dsiplayInstructions:
-	lea dx,[instructions]
-	mov ah,9
-	int 21h
+	mov ax,pictureData
+	mov ds,ax
+	mov dx,[bp+8]
+	push dx
+	mov dx,[bp+4]
+	push dx
+	call printPict
+	mov ax,@data
+	mov ds,ax
+instructionsCycle:
 	and ax,0
 	int 16h
+	dec ah
+	jnz instructionsCycle
+	clearScreen
 	and [word ptr bulletY],0
 	and [word ptr bulletX],0 ;reset the bullet's position because when checking for hit, we might encounter the old position of a deleted bullet 
 	and [bulletFlag],0
@@ -118,6 +131,8 @@ proc checkForHitMenu
 maybeQuitSelected:
 	cmp [bulletY],125
 	ja selectionUpdated
+	cmp [bulletY],0
+	je selectionUpdated
 	mov selection,3
 	jmp selectionUpdated
 

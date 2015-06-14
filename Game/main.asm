@@ -154,16 +154,6 @@ DATASEG
 	MarkerW dw 8
 	MarkerH dw 8
 	Marked db 1
-	instructions db "Welcome to Space Invaders OL!",0Ah
-				 db "In the game, you are the spaceship.",0ah
-				 db "The fate of the world is in your hands!",0Ah
-				 db "You must eliminate all the aliens, before they get to you and kill you!",0ah
-				 db "But they won't stop with you, they will not rest until they see the end of ",0Ah,"mankind!",0ah
-				 db 0Ah,0Ah,0Ah,0Ah
-				 db "Use the right and lef arrow keys to move, and the spacebar to blast the aliens",0Ah,"with your laser cannon.",0ah
-				 db "To win, hit all the aliens before they get to your spaceship's height line.",0ah
-				 db "To pause, press the Esc key.",0ah
-				 db "Press any key to return to the menu."
 				 db '$'
 	stageMsg db "Stage ",'$'
 	stageClearMsg db 9  dup (0Ah)
@@ -176,6 +166,7 @@ DATASEG
 segment PictureData
 	menuName     	db 'resource\menu.pcx', 0
 	bgName     	db 'resource\bg.pcx', 0
+	instructions db 'resource\instru~1.pcx',0
 	Buffer       	db 64000 dup(?) 
 ends
 ; --------------------------
@@ -197,6 +188,8 @@ start:
 ; --------------------------
 ; The code starts here:
 mainMenu:
+	mov dx,offset instructions
+	push dx
 	mov dx,offset menuName
 	push dx
 	mov dx,offset buffer
