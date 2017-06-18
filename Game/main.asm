@@ -131,42 +131,14 @@ DATASEG
 	alienDirection db 1
 	winMsg db "Well Done!",0Ah,"You vanquished all the aliens and saved mankind!",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
 	lossMsg db "GAME OVER!",0Ah,"The aliens have reached the earth and",0Ah,"they will destroy all mankind.",0Ah,0Ah,0Ah,"Press any key to exit.",'$'
-	menuMsg db 9  dup (0ah)
-	    db 15 dup (" ")
-		db "Play Game!",0ah
-		db 0ah
-		db 14 dup (" ")
-		db "Instructions",0ah
-		db 0ah
-		db 18 dup (" ")
-		db "Exit"
-		db '$'
-	Marker db 15,00,00,00,00,00,00,00
-	       db 15,15,00,00,00,00,00,00
-	       db 15,15,15,00,00,00,00,00
-	       db 15,15,15,15,00,00,00,00
-	       db 15,15,15,15,00,00,00,00
-	       db 15,15,15,00,00,00,00,00
-	       db 15,15,00,00,00,00,00,00
-	       db 15,00,00,00,00,00,00,00
-	MarkerX dw 78
-	MarkerY dw 101
-	MarkerW dw 8
-	MarkerH dw 8
-	Marked db 1
 				 db '$'
 	stageMsg db "Stage ",'$'
-	stageClearMsg db 9  dup (0Ah)
-				  db 13 dup (' ')
-				  db "Stage Cleared!"
-				  db 0ah
-				  db " press any key to move to the next stage"
-				  db '$'
 ; --------------------------
 segment PictureData
 	menuName     	db 'resource\menu.pcx', 0
-	bgName     	db 'resource\bg.pcx', 0
-	instructions db 'resource\instru~1.pcx',0
+	bgName     		db 'resource\bg.pcx', 0
+	instructions 	db 'resource\instru~1.pcx',0
+	stageClear 		db 'resource\stgclr.pcx',0
 	Buffer       	db 64000 dup(?) 
 ends
 ; --------------------------
@@ -313,13 +285,22 @@ win:
 	ja gameFinished
 	and [byte ptr winFlag],0
 	and [byte ptr lossFlag],0
-	lea dx,[StageclearMsg]
-	mov ah,9
-	int 21h
+;print the message:
+	mov ax,pictureData
+	mov ds,ax
+	mov dx,offset stageClear
+	push dx
+	mov dx,offset buffer
+	push dx
+	call printPict
+	mov ax,@data
+	mov ds,ax
+stageClearCycle:
 	and ax,0
 	int 16h
-	mov ax,13h
-	int 10h
+	cmp ah,spacebar
+	jne stageClearCycle
+	clearScreen
 	jmp startGame
 gameFinished:
 	mov ah,09h
